@@ -1,0 +1,108 @@
+name: Checkpoint 1 — Auto and Teacher Grade
+
+on:
+  push:
+    branches: ['cp1-*']
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited, closed]
+    branches: [main]
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+jobs:
+  grade:
+    if: ${{ github.event_name != 'issue_comment' || github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Grade checkpoint
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const marker = '<!-- klis-cp1-progress -->';
+            const allowedGraders = new Set(['hbycwyh2008']);
+
+            let eventPR = null;
+            if (context.eventName === 'pull_request_target') eventPR = context.payload.pull_request;
+            if (context.eventName === 'issue_comment') {
+              eventPR = (await github.rest.pulls.get({owner, repo, pull_number: context.payload.issue.number})).data;
+            }
+
+            const username = eventPR ? eventPR.user.login : context.actor;
+            const branch = `cp1-${username}`;
+
+            let branchExists = false;
+            try {
+              await github.rest.repos.getBranch({owner, repo, branch});
+              branchExists = true;
+            } catch (e) { if (e.status !== 404) throw e; }
+
+            const read = async path => {
+              if (!branchExists) return '';
+              try {
+                const r = await github.rest.repos.getContent({owner, repo, path, ref: branch});
+                if (Array.isArray(r.data) || !r.data.content) return '';
+                return Buffer.from(r.data.content, r.data.encoding).toString('utf8');
+              } catch (e) { if (e.status === 404) return ''; throw e; }
+            };
+
+            const readme = await read('project/README.md');
+            const ignore = await read('project/.gitignore');
+            const license = await read('project/LICENSE');
+            const submission = await read('submission.md');
+
+            const field = label => submission.match(new RegExp(`^${label}:\\s*(\\S.*)$`, 'mi'))?.[1]?.trim() || '';
+            const answer = heading => submission.match(new RegExp(`## ${heading}[\\s\\S]*?\\nAnswer:\\s*([\\s\\S]*?)(?=\\n## |$)`, 'i'))?.[1]?.trim() || '';
+            const submissionComplete = ['Name','GitHub Username','Required Branch'].every(field) &&
+              ['Question 1','Question 2','Question 3','Reflection'].every(answer);
+
+            const pulls = await github.paginate(github.rest.pulls.list, {owner, repo, state:'all', per_page:100});
+            const pr = pulls.find(p => p.head.ref === branch && p.base.ref === 'main' && p.user.login.toLowerCase() === username.toLowerCase() && p.state === 'open');
+
+            const filesFound = [readme, ignore, license].filter(Boolean).length;
+            const meaningfulReadme = /^#\s+\S/m.test(readme) && readme.trim().length >= 80;
+            const meaningfulIgnore = ignore.split('\n').some(x => x.trim() && !x.trim().startsWith('#'));
+            const meaningfulLicense = license.trim().length >= 200;
+
+            const checks = [
+              ['Correct checkpoint branch', branchExists ? 10 : 0, 10, branchExists ? branch : `expected ${branch}`],
+              ['README, .gitignore, LICENSE exist', filesFound * 5, 15, `${filesFound}/3 files found`],
+              ['README has meaningful content', meaningfulReadme ? 5 : 0, 5, meaningfulReadme ? 'passed' : 'needs title, purpose, and setup/usage detail'],
+              ['.gitignore has a real rule', meaningfulIgnore ? 5 : 0, 5, meaningfulIgnore ? 'passed' : 'add at least one non-comment rule'],
+              ['LICENSE contains substantial text', meaningfulLicense ? 5 : 0, 5, meaningfulLicense ? 'passed' : 'add full license text'],
+              ['Pull Request targets main', pr ? 10 : 0, 10, pr ? `PR #${pr.number}` : 'open the required PR'],
+              ['Submission is complete', submissionComplete ? 10 : 0, 10, submissionComplete ? 'all responses completed' : 'complete submission.md']
+            ];
+
+            const automatic = checks.reduce((s,c) => s + c[1], 0);
+            let manual = null;
+            if (pr) {
+              const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number:pr.number, per_page:100});
+              for (const c of [...comments].sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at))) {
+                if (!allowedGraders.has(c.user?.login?.toLowerCase())) continue;
+                const m = c.body?.match(/(?:^|\n)\s*\/manual-grade\s+(40|[0-3]?\d)(?:\s|$)/i);
+                if (m) { manual = {score:Number(m[1]), grader:c.user.login}; break; }
+              }
+            }
+
+            const teacher = manual?.score ?? 0;
+            const total = automatic + teacher;
+            const rows = checks.map(([label,earned,max,detail]) => `| ${earned===max?'✅':earned?'🟨':'⬜'} ${label} | ${earned}/${max} | ${detail} |`).join('\n');
+            const status = automatic < 60 ? '🟡 **IN PROGRESS**' : !manual ? '🔵 **AWAITING TEACHER REVIEW**' : `✅ **FINAL SCORE: ${total}/100**`;
+            const body = `${marker}\n## Checkpoint 1 Progress\n\n**Automatic:** ${automatic}/60  \n**Teacher:** ${manual ? `${teacher}/40` : 'awaiting review'}  \n**Current total:** ${total}/100\n\n| Check | Score | Evidence |\n|---|---:|---|\n${rows}\n| 🧑‍🏫 Teacher review | ${manual ? `${teacher}/40` : '—/40'} | ${manual ? `graded by @${manual.grader}` : 'awaiting review'} |\n\n${status}`;
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {owner, repo, state:'all', per_page:100});
+            let progress = issues.find(i => !i.pull_request && i.body?.includes(marker));
+            if (!progress) progress = (await github.rest.issues.create({owner, repo, title:'Checkpoint 1 — Progress', body:marker})).data;
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number:progress.number, per_page:100});
+            const old = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (old) await github.rest.issues.updateComment({owner, repo, comment_id:old.id, body});
+            else await github.rest.issues.createComment({owner, repo, issue_number:progress.number, body});
+
+            await core.summary.addHeading(`Checkpoint 1: ${total}/100`).addRaw(`Automatic: ${automatic}/60\n`).addRaw(`Teacher: ${manual ? `${teacher}/40` : 'awaiting review'}\n`).write();
+            if (automatic !== 60 && ['push','pull_request_target'].includes(context.eventName)) core.setFailed(`Automatic score is ${automatic}/60.`);
