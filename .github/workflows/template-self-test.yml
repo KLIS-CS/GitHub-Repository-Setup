@@ -38,7 +38,6 @@ jobs:
             TEACHER-GRADING.md \
             .github/ISSUE_TEMPLATE/cp1-submission.yml \
             .github/ISSUE_TEMPLATE/config.yml \
-            .github/workflows/0-start-exercise.yml \
             .github/workflows/grade.yml \
             .github/workflows/teacher-review-files.yml \
             .github/scripts/cp1-utils.js \
@@ -46,14 +45,14 @@ jobs:
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-          grep -q 'COPY%20CP1%20EXERCISE' README.md
-          grep -q 'CP1-STARTER-README' README.md
-          grep -q 'Start CP1' README.md
+          grep -q 'New repository' README.md
+          grep -q 'at least two commits' README.md
+          grep -q 'do not use a template' README.md
           grep -q 'Submit CP1' README.md
-          grep -q 'CP1-STARTER-README' CP1-TASK.md
+          grep -q 'New repository' CP1-TASK.md
+          grep -q 'at least two commits' CP1-TASK.md
           grep -q 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -q 'official KLIS-CS' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -q 'workflow_dispatch' .github/workflows/0-start-exercise.yml
+          grep -q 'did not use a template or fork' .github/ISSUE_TEMPLATE/cp1-submission.yml
           grep -q '/manual-grade' .github/workflows/grade.yml
           grep -q 'Teacher grading' .github/workflows/grade.yml
           grep -q 'README: 0/10' .github/workflows/grade.yml
@@ -72,10 +71,11 @@ jobs:
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js
 
-      - name: Confirm template-based CP1 contract
+      - name: Confirm create-and-modify CP1 contract
         shell: bash
         run: |
           set -euo pipefail
-          grep -q "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
-          grep -q 'starterReadmePresent' .github/scripts/cp1-utils.js
-          echo 'CP1 template workflow contract is present.'
+          grep -q 'createdFromScratch' .github/scripts/cp1-utils.js
+          grep -q 'hasModificationCommit' .github/scripts/cp1-utils.js
+          grep -q 'commitCount' .github/scripts/cp1-utils.js
+          echo 'CP1 create-and-modify contract is present.'
