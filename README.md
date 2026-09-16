@@ -12,9 +12,15 @@ LICENSE
 
 **CP1 intentionally does not test `git clone`, branches, commits, pushes, or Pull Requests.** Those skills begin in CP2. This checkpoint is only about setting up a repository correctly in GitHub and explaining your decisions.
 
-## What you must create
+## Start CP1
 
-Create a **new public practice repository in your own GitHub account** with this exact name:
+CP1 is different from the later checkpoints: **you should not copy a template for this checkpoint.** Creating the repository yourself is part of the test.
+
+Use this button to open GitHub's **Create a new repository** page:
+
+[![Start CP1](https://img.shields.io/badge/START%20CP1-CREATE%20REPOSITORY-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new)
+
+Create the repository in **your own GitHub account** with this exact name:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
@@ -26,7 +32,11 @@ Example:
 cp1-repository-setup-octocat
 ```
 
-Do **not** fork another repository and do **not** generate this repository from a template. The purpose of CP1 is to prove that you can create a repository yourself.
+> **Why no “Copy Exercise” button?** CP1 is testing whether you can create and configure a repository from scratch. A template copy would complete part of the task for you. CP2–CP5 can use copied exercise repositories because those checkpoints test later Git/GitHub workflows.
+
+## What you must create
+
+Do **not** fork another repository and do **not** generate this repository from a template.
 
 When creating the repository on GitHub:
 
@@ -67,7 +77,7 @@ Your `LICENSE` must contain the complete license text, not just the name of a li
 
 After your practice repository is ready, submit it through the CP1 submission form:
 
-[![Submit CP1](https://img.shields.io/badge/Submit%20CP1-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
+[![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
 The submission form asks for your practice repository URL and four short explanations. When you submit the Issue, GitHub Actions automatically checks the repository and posts a live score in that same Issue.
 
