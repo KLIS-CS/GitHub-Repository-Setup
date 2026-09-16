@@ -2,37 +2,37 @@
 
 **Time target:** 25 minutes
 
-This file is copied into your own CP1 repository so you always have the task instructions after cloning.
+## 1. Create the repository yourself
 
-## 1. Create your CP1 copy
+Go to **GitHub → New repository**. Do not use a template and do not fork another repository.
 
-Use the official KLIS-CS template:
-
-[![Copy Exercise](https://img.shields.io/badge/COPY%20CP1%20EXERCISE-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&visibility=public)
-
-Name the repository exactly:
+Create a **Public** repository in your own account named exactly:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
 ```
 
-Make it **Public**.
+During repository creation:
 
-Do not fork another repository and do not use an unrelated template.
+- add a `README.md`;
+- choose an appropriate `.gitignore` template;
+- choose a real open-source `LICENSE`.
 
-## 2. Start the interactive instructions
+This step assesses whether you can make the repository-setup decisions yourself.
 
-In your copied repository:
+## 2. Clone and inspect it locally
 
-1. Open **Actions**.
-2. Select **Start CP1**.
-3. Choose **Run workflow**.
-4. Read the Exercise Issue GitHub creates.
-5. Clone your copied repository to your computer.
+Clone the repository to your computer. Then inspect the repository state before changing anything.
 
-## 3. Complete the repository setup
+```bash
+git status
+```
 
-Your finished repository must contain all three of these files:
+You should know which repository you cloned and what branch you are on before making changes.
+
+## 3. Modify the repository locally
+
+Your finished repository must contain:
 
 ```text
 README.md
@@ -42,60 +42,61 @@ LICENSE
 
 ### README.md
 
-Replace the starter README completely. Your finished README must include:
+Improve the README so it includes:
 
 - an H1 project title;
 - a clear explanation of the repository;
 - a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
 - at least one useful instruction another developer could follow.
 
-The starter marker `CP1-STARTER-README` must be gone before submission.
-
 ### .gitignore
 
-Create a real `.gitignore` appropriate for your project. It must contain at least one non-comment ignore rule, for example:
-
-```text
-node_modules/
-.env
-.DS_Store
-dist/
-```
+Review the `.gitignore` created during repository setup. Keep or modify it so it contains at least one meaningful ignore rule appropriate for the project.
 
 ### LICENSE
 
-Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
+Confirm that the repository contains the complete text of the open-source license you selected and that you can explain what the license permits or requires.
 
-## 4. Save your work
+## 4. Commit and push your local modification
 
-Commit and push your completed repository to `main`.
+Use the normal local Git workflow:
+
+```text
+git status
+→ git add
+→ git status
+→ git commit
+→ git push
+```
+
+Your repository should show a meaningful commit produced after the initial repository creation.
 
 CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
 
 ## 5. Before you submit
 
+- [ ] I created the repository myself with **GitHub → New repository**
 - [ ] Repository name is exactly `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 - [ ] Repository is Public
-- [ ] Repository belongs to your GitHub account
-- [ ] Repository came from the official KLIS-CS CP1 template, not a fork or unrelated template
-- [ ] Starter README has been replaced
+- [ ] Repository belongs to my GitHub account
+- [ ] Repository is not a fork and was not created with **Use this template**
+- [ ] `README.md` is useful and complete
 - [ ] `.gitignore` contains at least one real ignore rule
 - [ ] `LICENSE` contains complete license text
+- [ ] I cloned the repository locally and made a meaningful modification
+- [ ] I committed and pushed that modification
 - [ ] No passwords, tokens, API keys, or secrets were committed
 
 ## 6. Submit CP1
 
 [![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-0969da?style=for-the-badge&logo=github)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
-The submission form asks for your repository URL, GitHub username, short explanations of your README / `.gitignore` / LICENSE decisions, and one reflection.
+The central submission form asks for your repository URL, GitHub username, short explanations of your README / `.gitignore` / LICENSE decisions, and one reflection.
 
 After submission:
 
 ```text
 Automatic grader → /60
-Teacher file review → README + .gitignore + LICENSE
-Teacher /manual-grade → /40
+Teacher review → /40
 Final → /100
 ```
-
-[Open the CP1 source repository](https://github.com/KLIS-CS/GitHub-Repository-Setup)
