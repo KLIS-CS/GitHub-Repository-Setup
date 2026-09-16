@@ -30,17 +30,23 @@ Choosing what belongs in .gitignore required the most judgment because some file
 
 ### Integrity Check
 
-- [x] I created this repository myself with GitHub → New repository; I did not fork or use a template.
+- [x] I used the official KLIS-CS CP1 Copy Exercise and did not fork another repository.
+- [x] I worked on main and did not create a feature branch or Pull Request for CP1.
 - [x] My finished README.md, .gitignore, and LICENSE are all visible on main.
 - [x] I did not include passwords, API keys, tokens, or other secrets in the repository.
 `;
 
-const meta = {
+const baseMeta = {
   private: false,
   fork: false,
   owner: { login: student },
   name: 'cp1-repository-setup-octocat',
   default_branch: 'main'
+};
+
+const officialTemplateMeta = {
+  ...baseMeta,
+  template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' }
 };
 
 const readme = `# CP1 Repository Setup Practice
@@ -63,22 +69,25 @@ assert.strictEqual(parseRepoUrl('not-a-url'), null);
 assert.strictEqual(parseRepoUrl('https://github.com/octocat/repo/blob/main/README.md'), null);
 assert.strictEqual(extractSection(issueBody, 'GitHub Username'), 'octocat');
 
-const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student });
-assert.strictEqual(full.automatic, 60, `Expected complete CP1 fixture to score 60, got ${full.automatic}`);
+const full = evaluateSubmission({ meta: officialTemplateMeta, readme, gitignore, license, issueBody, student });
+assert.strictEqual(full.automatic, 60, `Expected official Copy Exercise fixture to score 60, got ${full.automatic}`);
 assert.strictEqual(full.integrityConfirmed, true);
 
-const templateCopy = evaluateSubmission({
-  meta: { ...meta, template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' } },
+const legacyFromScratch = evaluateSubmission({ meta: baseMeta, readme, gitignore, license, issueBody, student });
+assert.strictEqual(legacyFromScratch.automatic, 60, 'Previously created non-template CP1 repositories should remain compatible');
+
+const unrelatedTemplate = evaluateSubmission({
+  meta: { ...baseMeta, template_repository: { full_name: 'someone/other-template' } },
   readme,
   gitignore,
   license,
   issueBody,
   student
 });
-assert.ok(templateCopy.automatic < 60, 'Template-created repository must not receive full CP1 credit');
+assert.ok(unrelatedTemplate.automatic < 60, 'Unrelated template copies must not receive full CP1 credit');
 
 const wrongOwner = evaluateSubmission({
-  meta: { ...meta, owner: { login: 'someone-else' } },
+  meta: { ...officialTemplateMeta, owner: { login: 'someone-else' } },
   readme,
   gitignore,
   license,
@@ -88,7 +97,7 @@ const wrongOwner = evaluateSubmission({
 assert.ok(wrongOwner.automatic < 60, 'Wrong repository owner must lose points');
 
 const weakFiles = evaluateSubmission({
-  meta,
+  meta: officialTemplateMeta,
   readme: '# Too short',
   gitignore: '# comments only',
   license: 'MIT',
@@ -97,8 +106,18 @@ const weakFiles = evaluateSubmission({
 });
 assert.ok(weakFiles.automatic <= 40, `Weak repository files should score at most 40, got ${weakFiles.automatic}`);
 
+const unchangedStarter = evaluateSubmission({
+  meta: officialTemplateMeta,
+  readme: '<!-- CP1-STARTER-README -->\n# CP1 — GitHub Repository Setup\n\n## Setup\nStarter instructions that should be replaced before submission. This text is long enough to defeat a length-only check.',
+  gitignore,
+  license,
+  issueBody,
+  student
+});
+assert.ok(unchangedStarter.automatic < 60, 'Unchanged CP1 starter README must lose README points');
+
 const forked = evaluateSubmission({
-  meta: { ...meta, fork: true },
+  meta: { ...officialTemplateMeta, fork: true },
   readme,
   gitignore,
   license,
@@ -106,5 +125,15 @@ const forked = evaluateSubmission({
   student
 });
 assert.ok(forked.automatic < 60, 'Forked repository must not receive full credit');
+
+const wrongDefaultBranch = evaluateSubmission({
+  meta: { ...officialTemplateMeta, default_branch: 'feature' },
+  readme,
+  gitignore,
+  license,
+  issueBody,
+  student
+});
+assert.ok(wrongDefaultBranch.automatic < 60, 'CP1 must use main as the default branch');
 
 console.log('CP1 grader fixture tests passed.');
