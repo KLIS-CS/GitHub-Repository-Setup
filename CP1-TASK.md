@@ -2,44 +2,58 @@
 
 **Time target:** 25 minutes
 
-Keep this page open while you work. CP1 is intentionally different from later checkpoints: you create your own repository from scratch, so this task sheet is **not copied into your student repository**.
+This file is copied into your own CP1 repository so you always have the task instructions after cloning.
 
-## Your task
+## 1. Create your CP1 copy
 
-Create a new **public** GitHub repository in your own account with this exact name:
+Use the official KLIS-CS template:
+
+[![Copy Exercise](https://img.shields.io/badge/COPY%20CP1%20EXERCISE-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&visibility=public)
+
+Name the repository exactly:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
 ```
 
-Example:
+Make it **Public**.
+
+Do not fork another repository and do not use an unrelated template.
+
+## 2. Start the interactive instructions
+
+In your copied repository:
+
+1. Open **Actions**.
+2. Select **Start CP1**.
+3. Choose **Run workflow**.
+4. Read the Exercise Issue GitHub creates.
+5. Clone your copied repository to your computer.
+
+## 3. Complete the repository setup
+
+Your finished repository must contain all three of these files:
 
 ```text
-cp1-repository-setup-octocat
+README.md
+.gitignore
+LICENSE
 ```
 
-Do **not** fork a repository and do **not** generate the repository from a template.
+### README.md
 
-## Required repository setup
-
-Your repository must contain all three of these:
-
-1. `README.md`
-2. `.gitignore`
-3. `LICENSE`
-
-### README requirements
-
-Your `README.md` must include:
+Replace the starter README completely. Your finished README must include:
 
 - an H1 project title;
-- a short explanation of the repository;
-- a **Setup**, **Usage**, **Getting Started**, or **Installation** section;
-- at least one useful instruction a new developer could follow.
+- a clear explanation of the repository;
+- a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
+- at least one useful instruction another developer could follow.
 
-### .gitignore requirements
+The starter marker `CP1-STARTER-README` must be gone before submission.
 
-Your `.gitignore` must contain at least one real ignore rule appropriate for the project, for example:
+### .gitignore
+
+Create a real `.gitignore` appropriate for your project. It must contain at least one non-comment ignore rule, for example:
 
 ```text
 node_modules/
@@ -48,46 +62,40 @@ node_modules/
 dist/
 ```
 
-### LICENSE requirements
+### LICENSE
 
-Use GitHub's license chooser and add a real open-source license such as MIT, Apache-2.0, or GPL-3.0. The `LICENSE` file must contain the complete license text.
+Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
 
-## Local clone — optional for CP1
+## 4. Save your work
 
-You may clone **your own CP1 repository** if you want to inspect or edit it locally:
+Commit and push your completed repository to `main`.
 
-```bash
-git clone https://github.com/YOUR-USERNAME/cp1-repository-setup-YOUR-GITHUB-USERNAME.git
-```
+CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
 
-CP1 does **not** require clone, branch, push, or Pull Request skills. Those are assessed later. Because your CP1 repository must be created from scratch, this task sheet will not appear inside the cloned student repository.
+## 5. Before you submit
 
-## Before you submit
-
-Check all of the following:
-
-- [ ] Repository name exactly matches `cp1-repository-setup-YOUR-GITHUB-USERNAME`
+- [ ] Repository name is exactly `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 - [ ] Repository is Public
 - [ ] Repository belongs to your GitHub account
-- [ ] Repository was created from scratch
-- [ ] `README.md` meets the requirements
-- [ ] `.gitignore` contains a real ignore rule
+- [ ] Repository came from the official KLIS-CS CP1 template, not a fork or unrelated template
+- [ ] Starter README has been replaced
+- [ ] `.gitignore` contains at least one real ignore rule
 - [ ] `LICENSE` contains complete license text
 - [ ] No passwords, tokens, API keys, or secrets were committed
 
-## Submit CP1
+## 6. Submit CP1
 
-When your repository is ready, click the button below.
+[![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-0969da?style=for-the-badge&logo=github)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
-[![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
+The submission form asks for your repository URL, GitHub username, short explanations of your README / `.gitignore` / LICENSE decisions, and one reflection.
 
-The submission form asks for:
+After submission:
 
-- your CP1 repository URL;
-- your GitHub username;
-- short explanations of your README, `.gitignore`, and LICENSE decisions;
-- one reflection.
+```text
+Automatic grader → /60
+Teacher file review → README + .gitignore + LICENSE
+Teacher /manual-grade → /40
+Final → /100
+```
 
-After you submit the Issue, the automatic grader checks the repository and posts your score in the same Issue.
-
-[Back to CP1 overview](https://github.com/KLIS-CS/GitHub-Repository-Setup)
+[Open the CP1 source repository](https://github.com/KLIS-CS/GitHub-Repository-Setup)
