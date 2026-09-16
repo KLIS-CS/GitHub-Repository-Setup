@@ -38,7 +38,8 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   );
   const nameMatches = Boolean(meta && meta.name?.toLowerCase() === expectedRepo.toLowerCase());
   const createdFromScratch = Boolean(meta && meta.fork === false && !templateSource);
-  const hasModificationEvidence = Number(commitCount) >= 2;
+  const modificationConfirmed = /\[x\][^\n]*cloned the repository locally[^\n]*meaningful modification[^\n]*pushed/i.test(integrity);
+  const hasModificationEvidence = Number(commitCount) >= 2 || modificationConfirmed;
 
   const starterReadmePresent = /CP1-STARTER-README/i.test(readme);
   const readmeExists = Boolean(readme.trim());
@@ -86,8 +87,10 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
     !nameMatches ? `Repository must be named ${expectedRepo}.` :
     !createdFromScratch ? 'Create the repository yourself with GitHub → New repository; do not fork or use a template.' :
-    !hasModificationEvidence ? 'Repository creation detected, but at least one later modification commit is still required.' :
-    `Public, correctly named, student-owned repository created from scratch with ${commitCount} commit(s).`;
+    !hasModificationEvidence ? 'Repository creation detected, but the required local clone → modify → commit → push step is not confirmed.' :
+    Number(commitCount) >= 2
+      ? `Public, correctly named, student-owned repository created from scratch with ${commitCount} commit(s).`
+      : 'Public, correctly named, student-owned repository created from scratch; local modification confirmed in the submission.';
 
   const checks = [
     ['Repository creation + modification', repoSetupScore, 15, repoDetail],
