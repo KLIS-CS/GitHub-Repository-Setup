@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'README.md'
+      - 'CP1-TASK.md'
       - 'TEACHER-GRADING.md'
       - '.github/**'
       - 'tests/**'
@@ -12,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'README.md'
+      - 'CP1-TASK.md'
       - 'TEACHER-GRADING.md'
       - '.github/**'
       - 'tests/**'
@@ -21,6 +23,7 @@ permissions:
 
 jobs:
   assessment-self-test:
+    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,45 +34,48 @@ jobs:
           set -euo pipefail
           for f in \
             README.md \
+            CP1-TASK.md \
             TEACHER-GRADING.md \
             .github/ISSUE_TEMPLATE/cp1-submission.yml \
             .github/ISSUE_TEMPLATE/config.yml \
+            .github/workflows/0-start-exercise.yml \
             .github/workflows/grade.yml \
+            .github/workflows/teacher-review-files.yml \
             .github/scripts/cp1-utils.js \
             tests/cp1-utils.test.js; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-          grep -q 'cp1-repository-setup-YOUR-GITHUB-USERNAME' README.md
+          grep -q 'COPY%20CP1%20EXERCISE' README.md
+          grep -q 'CP1-STARTER-README' README.md
+          grep -q 'Start CP1' README.md
+          grep -q 'Submit CP1' README.md
+          grep -q 'CP1-STARTER-README' CP1-TASK.md
           grep -q 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -q 'issues:' .github/workflows/grade.yml
+          grep -q 'official KLIS-CS' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -q 'workflow_dispatch' .github/workflows/0-start-exercise.yml
           grep -q '/manual-grade' .github/workflows/grade.yml
           grep -q 'Teacher grading' .github/workflows/grade.yml
           grep -q 'README: 0/10' .github/workflows/grade.yml
           grep -q '.gitignore: 0/10' .github/workflows/grade.yml
           grep -q 'LICENSE: 0/10' .github/workflows/grade.yml
           grep -q 'Reasoning: 0/10' .github/workflows/grade.yml
+          grep -q 'Teacher Review Files' .github/workflows/teacher-review-files.yml
           grep -q '60 automatic' TEACHER-GRADING.md
           grep -q 'fixed template' TEACHER-GRADING.md
 
       - name: Validate workflow YAML syntax
         shell: bash
         run: |
-          ruby -e "require 'psych'; Psych.parse_file('.github/workflows/grade.yml'); Psych.parse_file('.github/workflows/template-self-test.yml')"
+          ruby -e "require 'psych'; Dir['.github/workflows/*.yml'].each { |f| Psych.parse_file(f) }"
 
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js
 
-      - name: Confirm old branch-based CP1 design is gone
+      - name: Confirm template-based CP1 contract
         shell: bash
         run: |
           set -euo pipefail
-          if grep -q 'cp1-YOUR-GITHUB-USERNAME' README.md; then
-            echo 'Old CP1 branch convention is still present.'
-            exit 1
-          fi
-          if grep -q 'project/README.md' README.md; then
-            echo 'Old nested project/ assessment design is still present.'
-            exit 1
-          fi
-          echo 'CP1 now tests repository setup directly.'
+          grep -q "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
+          grep -q 'starterReadmePresent' .github/scripts/cp1-utils.js
+          echo 'CP1 template workflow contract is present.'
