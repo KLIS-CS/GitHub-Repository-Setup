@@ -8,12 +8,12 @@ CP1 checks whether you can complete a clean GitHub repository with three require
 
 ## Required files
 
-Create these three files at the repository root:
+Create these three project files at the repository root:
 
 ```text
 README.md
 .gitignore
-LICENSE
+LICENSE   (LICENSE.md or LICENSE.txt is also accepted)
 ```
 
 ### `README.md`
@@ -29,9 +29,15 @@ Write your own README. It must include:
 
 Create a `.gitignore` with at least one meaningful ignore rule appropriate for the project.
 
-### `LICENSE`
+### License file
 
-Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
+Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0. The grader accepts `LICENSE`, `LICENSE.md`, or `LICENSE.txt`.
+
+## How automatic grading works
+
+The grader separates **file existence** from **file quality**. Creating a required file earns the existence portion of the score even when the file is still empty; the remaining points require meaningful content.
+
+For example, an empty `.gitignore` is recognized as an existing file, but it still needs at least one real ignore rule for full credit.
 
 ## CP1 workflow
 
@@ -42,7 +48,7 @@ Copy Exercise
 → work directly on main
 → create README.md
 → create .gitignore
-→ create LICENSE
+→ create a license file
 → save / push the finished files
 → automatic score appears in your own CP1 — Score Issue
 → Submit CP1 to the mother repository
@@ -68,7 +74,7 @@ Keep the repository **Public** and keep `main` as the default branch.
 
 ## Your score
 
-After you create or update one of the three required files, GitHub Actions creates or refreshes an Issue named:
+After you create or update one of the required files, GitHub Actions creates or refreshes an Issue named:
 
 ```text
 CP1 — Score
@@ -101,6 +107,6 @@ Paste the repository URL, not a file URL.
 - [ ] `main` is the default branch
 - [ ] `README.md` is complete
 - [ ] `.gitignore` contains a meaningful rule
-- [ ] `LICENSE` contains complete license text
+- [ ] `LICENSE`, `LICENSE.md`, or `LICENSE.txt` contains complete license text
 - [ ] No feature branch or Pull Request was created for CP1
 - [ ] No passwords, API keys, tokens, or other secrets were committed
