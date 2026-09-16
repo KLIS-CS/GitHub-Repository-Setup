@@ -17,7 +17,7 @@ function parseRepoUrl(url) {
   return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
 }
 
-function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student }) {
+function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', commitCount = 0, issueBody = '', student }) {
   const repositoryUrl = extractSection(issueBody, 'Practice Repository URL');
   const statedUsername = extractSection(issueBody, 'GitHub Username').replace(/^@/, '').trim();
   const readmeAnswer = extractSection(issueBody, 'README Explanation');
@@ -28,7 +28,6 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   const parsed = parseRepoUrl(repositoryUrl);
 
   const expectedRepo = `cp1-repository-setup-${student}`;
-  const officialTemplate = 'klis-cs/github-repository-setup';
   const templateSource = meta?.template_repository?.full_name?.toLowerCase() || '';
 
   const repoAccessible = Boolean(meta && meta.private === false);
@@ -37,12 +36,9 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     meta.owner?.login?.toLowerCase() === student.toLowerCase() &&
     statedUsername.toLowerCase() === student.toLowerCase()
   );
-  const validOrigin = Boolean(
-    meta &&
-    meta.fork === false &&
-    (!templateSource || templateSource === officialTemplate)
-  );
   const nameMatches = Boolean(meta && meta.name?.toLowerCase() === expectedRepo.toLowerCase());
+  const createdFromScratch = Boolean(meta && meta.fork === false && !templateSource);
+  const hasModificationCommit = Number(commitCount) >= 2;
 
   const starterReadmePresent = /CP1-STARTER-README/i.test(readme);
   const readmeExists = Boolean(readme.trim());
@@ -71,9 +67,11 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   );
 
   const repoSetupScore =
-    (repoAccessible ? 5 : 0) +
-    (ownerMatches ? 5 : 0) +
-    (nameMatches && validOrigin ? 5 : 0);
+    (repoAccessible && ownerMatches ? 4 : 0) +
+    (nameMatches ? 3 : 0) +
+    (createdFromScratch ? 3 : 0);
+
+  const modificationScore = hasModificationCommit ? 5 : 0;
 
   const readmeScore =
     (readmeExists ? 5 : 0) +
@@ -84,17 +82,18 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   const licenseScore = (licenseExists ? 5 : 0) + (licenseSubstantial ? 5 : 0);
 
   const checks = [
-    ['Repository setup', repoSetupScore, 15,
+    ['Repository created from scratch', repoSetupScore, 10,
       !parsed ? 'Enter the full repository URL, not a README or file URL.' :
       !repoAccessible ? 'Repository not found or not public.' :
       !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
       !nameMatches ? `Repository must be named ${expectedRepo}.` :
-      !validOrigin ? 'Use the official KLIS-CS CP1 template; do not fork or use an unrelated template.' :
-      templateSource === officialTemplate ? 'Public, correctly named, student-owned repository copied from the official CP1 template.' :
-      'Public, correctly named, student-owned legacy CP1 repository.'],
+      !createdFromScratch ? 'Create CP1 manually with GitHub New repository; do not use a template or fork.' :
+      'Public, correctly named, student-owned repository created from scratch.'],
+    ['Repository modified after creation', modificationScore, 5,
+      hasModificationCommit ? `${commitCount} commits detected.` : 'At least two commits are required: the initial repository creation commit and a later modification commit.'],
     ['README.md', readmeScore, 15,
       !readmeExists ? 'README.md was not found at repository root.' :
-      starterReadmePresent ? 'Replace the starter README completely; the CP1-STARTER-README marker is still present.' :
+      starterReadmePresent ? 'Remove copied starter content and write your own README.' :
       !readmeStructured ? 'Add an H1 title and at least 120 characters of useful content.' :
       !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
       'README structure passed automatic checks.'],
