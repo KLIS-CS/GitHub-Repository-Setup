@@ -31,8 +31,7 @@ Choosing what belongs in .gitignore required the most judgment because some file
 ### Integrity Check
 
 - [x] I created this repository myself with GitHub → New repository; I did not fork or use a template.
-- [x] I chose the README, .gitignore, and LICENSE setup myself.
-- [x] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.
+- [x] My finished README.md, .gitignore, and LICENSE are all visible on main.
 - [x] I did not include passwords, API keys, tokens, or other secrets in the repository.
 `;
 
@@ -64,8 +63,8 @@ assert.strictEqual(parseRepoUrl('not-a-url'), null);
 assert.strictEqual(parseRepoUrl('https://github.com/octocat/repo/blob/main/README.md'), null);
 assert.strictEqual(extractSection(issueBody, 'GitHub Username'), 'octocat');
 
-const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student, commitCount: 2 });
-assert.strictEqual(full.automatic, 60, `Expected from-scratch create-and-modify fixture to score 60, got ${full.automatic}`);
+const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student });
+assert.strictEqual(full.automatic, 60, `Expected complete CP1 fixture to score 60, got ${full.automatic}`);
 assert.strictEqual(full.integrityConfirmed, true);
 
 const templateCopy = evaluateSubmission({
@@ -74,8 +73,7 @@ const templateCopy = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student,
-  commitCount: 2
+  student
 });
 assert.ok(templateCopy.automatic < 60, 'Template-created repository must not receive full CP1 credit');
 
@@ -85,8 +83,7 @@ const wrongOwner = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student,
-  commitCount: 2
+  student
 });
 assert.ok(wrongOwner.automatic < 60, 'Wrong repository owner must lose points');
 
@@ -96,8 +93,7 @@ const weakFiles = evaluateSubmission({
   gitignore: '# comments only',
   license: 'MIT',
   issueBody,
-  student,
-  commitCount: 2
+  student
 });
 assert.ok(weakFiles.automatic <= 40, `Weak repository files should score at most 40, got ${weakFiles.automatic}`);
 
@@ -107,20 +103,8 @@ const forked = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student,
-  commitCount: 2
+  student
 });
 assert.ok(forked.automatic < 60, 'Forked repository must not receive full credit');
-
-const onlyCreationCommit = evaluateSubmission({
-  meta,
-  readme,
-  gitignore,
-  license,
-  issueBody,
-  student,
-  commitCount: 1
-});
-assert.ok(onlyCreationCommit.automatic < 60, 'A repository with only the creation commit must lose modification points even if the integrity box is checked');
 
 console.log('CP1 grader fixture tests passed.');
