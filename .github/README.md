@@ -1,5 +1,9 @@
 # CP1 — GitHub Repository Setup
 
+[![Copy Exercise](https://img.shields.io/badge/COPY%20EXERCISE-%E2%86%92-2ea44f?style=for-the-badge&logo=github)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&name=cp1-repository-setup-YOUR-GITHUB-USERNAME&description=CP1%3A+GitHub+Repository+Setup&visibility=public)
+
+**Start here:** click **COPY EXERCISE**, replace `YOUR-GITHUB-USERNAME` in the repository name with your real GitHub username, keep the repository **Public**, and create the repository.
+
 CP1 checks whether you can complete a clean GitHub repository with three required project files while working directly on `main`.
 
 ## Required files
