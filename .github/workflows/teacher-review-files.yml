@@ -3,6 +3,8 @@ name: CP1 — Teacher File Review Panel
 on:
   issues:
     types: [opened, edited, reopened]
+  issue_comment:
+    types: [created, edited]
 
 permissions:
   contents: read
@@ -10,7 +12,7 @@ permissions:
 
 jobs:
   review-files:
-    if: ${{ !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
+    if: ${{ github.actor != 'github-actions[bot]' && !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -65,16 +67,31 @@ jobs:
             let body;
 
             if (!parsed) {
-              body = `${marker}\n## 🧑‍🏫 CP1 Teacher Review Files\n\nThe submitted repository URL could not be parsed. Ask the student to edit the submission Issue and provide the full GitHub repository URL.`;
+              body = [
+                marker,
+                '## 🧑‍🏫 CP1 Teacher Review Files',
+                '',
+                'The submitted repository URL could not be parsed. Ask the student to edit the submission Issue and provide the full GitHub repository URL.'
+              ].join('\n');
             } else {
               const studentOwner = parsed[1];
               const studentRepo = parsed[2].replace(/\.git$/i, '');
               const meta = await publicJson(`https://api.github.com/repos/${encodeURIComponent(studentOwner)}/${encodeURIComponent(studentRepo)}`);
 
               if (!meta) {
-                body = `${marker}\n## 🧑‍🏫 CP1 Teacher Review Files\n\nRepository not found: ${repositoryUrl}`;
+                body = [
+                  marker,
+                  '## 🧑‍🏫 CP1 Teacher Review Files',
+                  '',
+                  `Repository not found: ${repositoryUrl}`
+                ].join('\n');
               } else if (meta.private) {
-                body = `${marker}\n## 🧑‍🏫 CP1 Teacher Review Files\n\nThe submitted repository is **private**. CP1 requires a public repository so the grader and teacher can review the files.`;
+                body = [
+                  marker,
+                  '## 🧑‍🏫 CP1 Teacher Review Files',
+                  '',
+                  'The submitted repository is **private**. CP1 requires a public repository so the grader and teacher can review the files.'
+                ].join('\n');
               } else {
                 const branch = meta.default_branch || 'main';
                 const rawBranch = encodeURIComponent(branch);
@@ -88,38 +105,39 @@ jobs:
                   publicText(`${rawBase}/LICENSE`)
                 ]);
 
-                body = `${marker}
-                ## 🧑‍🏫 CP1 Teacher Review Files
-
-                **Student repository:** [${studentOwner}/${studentRepo}](${repoBase})  
-                **Default branch:** \`${branch}\`
-
-                Open the student's files directly:
-
-                - [README.md](${repoBase}/blob/${blobBranch}/README.md)
-                - [.gitignore](${repoBase}/blob/${blobBranch}/.gitignore)
-                - [LICENSE](${repoBase}/blob/${blobBranch}/LICENSE)
-
-                <details>
-                <summary><strong>README.md preview</strong></summary>
-
-                ${preview(readme, 8000)}
-                </details>
-
-                <details>
-                <summary><strong>.gitignore preview</strong></summary>
-
-                ${preview(gitignore, 5000)}
-                </details>
-
-                <details>
-                <summary><strong>LICENSE preview</strong></summary>
-
-                ${preview(license, 8000)}
-                </details>
-
-                Use these files together with the student's written explanations in the submission Issue when entering \`/manual-grade\`.
-                `;
+                body = [
+                  marker,
+                  '## 🧑‍🏫 CP1 Teacher Review Files',
+                  '',
+                  `**Student repository:** [${studentOwner}/${studentRepo}](${repoBase})  `,
+                  `**Default branch:** \`${branch}\``,
+                  '',
+                  'Open the student files directly:',
+                  '',
+                  `- [README.md](${repoBase}/blob/${blobBranch}/README.md)`,
+                  `- [.gitignore](${repoBase}/blob/${blobBranch}/.gitignore)`,
+                  `- [LICENSE](${repoBase}/blob/${blobBranch}/LICENSE)`,
+                  '',
+                  '<details>',
+                  '<summary><strong>README.md preview</strong></summary>',
+                  '',
+                  preview(readme, 8000),
+                  '</details>',
+                  '',
+                  '<details>',
+                  '<summary><strong>.gitignore preview</strong></summary>',
+                  '',
+                  preview(gitignore, 5000),
+                  '</details>',
+                  '',
+                  '<details>',
+                  '<summary><strong>LICENSE preview</strong></summary>',
+                  '',
+                  preview(license, 8000),
+                  '</details>',
+                  '',
+                  'Use these files together with the student\'s written explanations in the submission Issue when entering `/manual-grade`.'
+                ].join('\n');
               }
             }
 
