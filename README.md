@@ -12,9 +12,30 @@ LICENSE
 
 **CP1 intentionally does not test `git clone`, branches, commits, pushes, or Pull Requests.** Those skills begin in CP2. This checkpoint is only about setting up a repository correctly in GitHub and explaining your decisions.
 
-## Start CP1
+## Important: do not clone this checkpoint repository
 
-CP1 is different from the later checkpoints: **you should not copy a template for this checkpoint.** Creating the repository yourself is part of the test.
+CP1 is different from the later checkpoints. **Do not clone or copy `KLIS-CS/GitHub-Repository-Setup` as your student repository.** Creating your own repository from scratch is part of the assessment.
+
+If you choose to clone **your own newly created CP1 repository** to your computer, you will only see the files you created there. The quiz instructions and Submit button intentionally remain in this checkpoint hub so the starter material is not copied into your work.
+
+Keep the CP1 Task Sheet open while you work:
+
+[![Open Task Sheet](https://img.shields.io/badge/OPEN%20CP1%20TASK%20SHEET-%E2%86%92-0969da?style=for-the-badge&logo=github)](https://github.com/KLIS-CS/GitHub-Repository-Setup/blob/main/CP1-TASK.md)
+
+## Student flow
+
+```text
+Open CP1 Task Sheet
+→ Create your own repository from scratch
+→ Configure README + .gitignore + LICENSE
+→ Optional: clone your own repository for local inspection/editing
+→ Return to the CP1 Task Sheet
+→ Submit CP1
+→ Automatic grading
+→ Teacher grading
+```
+
+## Start CP1
 
 Use this button to open GitHub's **Create a new repository** page:
 
@@ -75,7 +96,7 @@ Your `LICENSE` must contain the complete license text, not just the name of a li
 
 ## Submit your checkpoint
 
-After your practice repository is ready, submit it through the CP1 submission form:
+After your practice repository is ready, return here or to `CP1-TASK.md` and submit it through the CP1 submission form:
 
 [![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
