@@ -1,38 +1,48 @@
 # CP1 Task Sheet — Repository Setup
 
-**Time target:** 25 minutes
+**Time target:** 25–30 minutes
 
-This file is copied into your own CP1 repository so you always have the task instructions after cloning.
+Checkpoint 1 tests both **repository creation** and **repository modification**. You must create the repository yourself first, then clone it and improve it locally.
 
-## 1. Create your CP1 copy
+## 1. Create the repository yourself
 
-Use the official KLIS-CS template:
+On GitHub, choose **New repository** and create a new **Public** repository in your own account.
 
-[![Copy Exercise](https://img.shields.io/badge/COPY%20CP1%20EXERCISE-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&visibility=public)
-
-Name the repository exactly:
+Name it exactly:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
 ```
 
-Make it **Public**.
+Example:
 
-Do not fork another repository and do not use an unrelated template.
+```text
+cp1-repository-setup-octocat
+```
 
-## 2. Start the interactive instructions
+Requirements:
 
-In your copied repository:
+- owner: your own GitHub account;
+- visibility: **Public**;
+- initialize with a `README.md`;
+- do **not** fork another repository;
+- do **not** use a template repository.
 
-1. Open **Actions**.
-2. Select **Start CP1**.
-3. Choose **Run workflow**.
-4. Read the Exercise Issue GitHub creates.
-5. Clone your copied repository to your computer.
+The initial README gives the new repository its first commit and a `main` branch.
 
-## 3. Complete the repository setup
+## 2. Clone the repository
 
-Your finished repository must contain all three of these files:
+Clone the repository to your computer and enter the repository folder.
+
+Before changing anything, inspect the repository state with:
+
+```bash
+git status
+```
+
+## 3. Modify the repository locally
+
+Your finished repository must contain all three of these files at the repository root:
 
 ```text
 README.md
@@ -42,14 +52,12 @@ LICENSE
 
 ### README.md
 
-Replace the starter README completely. Your finished README must include:
+Modify the initial README into a useful project README. It must include:
 
 - an H1 project title;
 - a clear explanation of the repository;
 - a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
 - at least one useful instruction another developer could follow.
-
-The starter marker `CP1-STARTER-README` must be gone before submission.
 
 ### .gitignore
 
@@ -66,22 +74,35 @@ dist/
 
 Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
 
-## 4. Save your work
+## 4. Commit the modification
 
-Commit and push your completed repository to `main`.
+Use `git status` to inspect your changes, then stage, commit, and push them to `main`.
+
+Your repository must have **at least two commits**:
+
+```text
+Commit 1 — repository creation / initial README
+Commit 2+ — your repository setup modifications
+```
+
+This requirement distinguishes **creating** a repository from **modifying** an existing repository.
 
 CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
 
 ## 5. Before you submit
 
-- [ ] Repository name is exactly `cp1-repository-setup-YOUR-GITHUB-USERNAME`
-- [ ] Repository is Public
-- [ ] Repository belongs to your GitHub account
-- [ ] Repository came from the official KLIS-CS CP1 template, not a fork or unrelated template
-- [ ] Starter README has been replaced
-- [ ] `.gitignore` contains at least one real ignore rule
-- [ ] `LICENSE` contains complete license text
-- [ ] No passwords, tokens, API keys, or secrets were committed
+- [ ] I created the repository manually with GitHub **New repository**.
+- [ ] Repository name is exactly `cp1-repository-setup-YOUR-GITHUB-USERNAME`.
+- [ ] Repository is Public.
+- [ ] Repository belongs to my GitHub account.
+- [ ] I did not use a template or fork.
+- [ ] I cloned the repository to my computer.
+- [ ] I modified the initial `README.md` locally.
+- [ ] I created a meaningful `.gitignore`.
+- [ ] I added a complete `LICENSE`.
+- [ ] The repository has at least two commits.
+- [ ] I pushed my changes to GitHub.
+- [ ] I did not commit passwords, tokens, API keys, or other secrets.
 
 ## 6. Submit CP1
 
@@ -98,4 +119,4 @@ Teacher /manual-grade → /40
 Final → /100
 ```
 
-[Open the CP1 source repository](https://github.com/KLIS-CS/GitHub-Repository-Setup)
+[Open the CP1 assessment repository](https://github.com/KLIS-CS/GitHub-Repository-Setup)
