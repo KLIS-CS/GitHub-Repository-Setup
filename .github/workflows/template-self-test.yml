@@ -44,7 +44,13 @@ jobs:
           grep -q 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
           grep -q 'issues:' .github/workflows/grade.yml
           grep -q '/manual-grade' .github/workflows/grade.yml
+          grep -q 'Teacher grading' .github/workflows/grade.yml
+          grep -q 'README: 0/10' .github/workflows/grade.yml
+          grep -q '.gitignore: 0/10' .github/workflows/grade.yml
+          grep -q 'LICENSE: 0/10' .github/workflows/grade.yml
+          grep -q 'Reasoning: 0/10' .github/workflows/grade.yml
           grep -q '60 automatic' TEACHER-GRADING.md
+          grep -q 'fixed template' TEACHER-GRADING.md
 
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js

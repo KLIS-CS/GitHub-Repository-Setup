@@ -57,6 +57,44 @@ jobs:
               return await r.text();
             }
 
+            function parseManualGrade(body) {
+              if (!body) return null;
+
+              // Backward-compatible short form: /manual-grade 36
+              const legacy = body.match(/(?:^|\n)\s*\/manual-grade\s+(40|[0-3]?\d)(?:\s|$)/i);
+              if (legacy) {
+                return {
+                  score: Number(legacy[1]),
+                  breakdown: null,
+                  format: 'short'
+                };
+              }
+
+              // Preferred fixed-template form.
+              if (!/(?:^|\n)\s*\/manual-grade\s*(?:\n|$)/i.test(body)) return null;
+
+              const readTen = label => {
+                const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const m = body.match(new RegExp(`^\\s*${escaped}:\\s*(10|[0-9])\\s*\\/\\s*10\\s*$`, 'mi'));
+                return m ? Number(m[1]) : null;
+              };
+
+              const breakdown = {
+                readme: readTen('README'),
+                gitignore: readTen('.gitignore'),
+                license: readTen('LICENSE'),
+                reasoning: readTen('Reasoning')
+              };
+
+              if (Object.values(breakdown).some(v => v === null)) return null;
+
+              return {
+                score: breakdown.readme + breakdown.gitignore + breakdown.license + breakdown.reasoning,
+                breakdown,
+                format: 'template'
+              };
+            }
+
             const repoUrlMatch = issue.body?.match(/### Practice Repository URL\s*\n+([^\n]+)/i);
             const repositoryUrl = repoUrlMatch?.[1]?.trim() || '';
             const parsed = parseRepoUrl(repositoryUrl);
@@ -95,9 +133,9 @@ jobs:
             let manual = null;
             for (const c of [...comments].sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at))) {
               if (!allowedGraders.has(c.user?.login?.toLowerCase())) continue;
-              const m = c.body?.match(/(?:^|\n)\s*\/manual-grade\s+(40|[0-3]?\d)(?:\s|$)/i);
-              if (m) {
-                manual = { score: Number(m[1]), grader: c.user.login };
+              const parsedGrade = parseManualGrade(c.body || '');
+              if (parsedGrade) {
+                manual = { ...parsedGrade, grader: c.user.login };
                 break;
               }
             }
@@ -118,6 +156,23 @@ jobs:
               ? 'Integrity check confirmed in the submission form.'
               : 'Integrity checkbox evidence was not detected; teacher should verify authorship.';
 
+            const breakdownText = manual?.breakdown
+              ? `README ${manual.breakdown.readme}/10 · .gitignore ${manual.breakdown.gitignore}/10 · LICENSE ${manual.breakdown.license}/10 · Reasoning ${manual.breakdown.reasoning}/10`
+              : manual
+                ? 'Teacher used the short-form manual score.'
+                : 'Not graded yet.';
+
+            const teacherTemplate = `\`\`\`text
+/manual-grade
+README: 0/10
+.gitignore: 0/10
+LICENSE: 0/10
+Reasoning: 0/10
+
+Feedback:
+Write concise feedback here.
+\`\`\``;
+
             const scoreBody = `${marker}
             ## CP1 Automatic Check
 
@@ -136,7 +191,15 @@ jobs:
 
             > ${integrityNote}
 
-            **How to improve your score:** make changes in the practice repository, then edit this submission Issue (even a small edit) to run the grader again.
+            ### 🧑‍🏫 Teacher grading
+
+            **Current teacher breakdown:** ${breakdownText}
+
+            Copy the fixed template below into a **new comment**, replace the four scores, and add feedback. The workflow will calculate the teacher subtotal automatically.
+
+            ${teacherTemplate}
+
+            **How to improve the automatic score:** make changes in the practice repository, then edit this submission Issue (even a small edit) to run the grader again.
             `;
 
             const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
