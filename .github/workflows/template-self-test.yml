@@ -45,6 +45,8 @@ jobs:
           require_file .github/scripts/cp1-utils.js
           require_file .github/tests/cp1-utils.test.js
 
+          require_text .github/README.md 'Copy Exercise'
+          require_text .github/README.md 'template_owner=KLIS-CS&template_name=GitHub-Repository-Setup'
           require_text .github/README.md 'CP1 — Score'
           require_text .github/README.md 'README.md'
           require_text .github/README.md '.gitignore'
