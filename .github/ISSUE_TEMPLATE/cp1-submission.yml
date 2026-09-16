@@ -1,5 +1,5 @@
 name: CP1 Submission — Repository Setup
-description: Submit the public practice repository you created from scratch for Checkpoint 1.
+description: Submit the public CP1 repository you completed from the official KLIS-CS template.
 title: "[CP1] Repository Setup Submission"
 body:
   - type: markdown
@@ -7,19 +7,19 @@ body:
       value: |
         ## Checkpoint 1 — Repository Setup
 
-        Create your practice repository first, then submit it here. The automatic grader will inspect the public repository and post your score in this Issue.
+        Complete your CP1 repository first, then submit it here. The automatic grader will inspect the public repository and post your score in this Issue.
 
         Required repository name:
 
         `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 
-        Your practice repository must be **public**, owned by you, and created from scratch — not a fork or template-generated copy.
+        Your repository must be **public**, owned by you, and must not be a fork or a copy of an unrelated template. The normal CP1 flow uses the official `KLIS-CS/GitHub-Repository-Setup` template.
 
   - type: input
     id: repository_url
     attributes:
       label: Practice Repository URL
-      description: Paste the full GitHub URL of the public repository you created for CP1.
+      description: Paste the full GitHub URL of your public CP1 repository. Paste the repository URL, not a README or file URL.
       placeholder: https://github.com/YOUR-USERNAME/cp1-repository-setup-YOUR-USERNAME
     validations:
       required: true
@@ -28,7 +28,7 @@ body:
     id: github_username
     attributes:
       label: GitHub Username
-      description: Enter the GitHub username that owns the practice repository.
+      description: Enter the GitHub username that owns the CP1 repository.
       placeholder: octocat
     validations:
       required: true
@@ -74,7 +74,9 @@ body:
     attributes:
       label: Integrity Check
       options:
-        - label: I created this practice repository myself and did not fork or generate it from a template.
+        - label: I did not fork another repository or use an unrelated template for this CP1 submission.
           required: true
-        - label: I did not include passwords, API keys, tokens, or other secrets in the practice repository.
+        - label: I replaced the starter README and created my own .gitignore and LICENSE choices.
+          required: true
+        - label: I did not include passwords, API keys, tokens, or other secrets in the repository.
           required: true
