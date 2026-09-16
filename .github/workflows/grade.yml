@@ -1,4 +1,4 @@
-name: CP1 — Repository Setup Grader
+name: CP1 — Mother Repository Grader
 
 on:
   issues:
@@ -7,12 +7,12 @@ on:
     types: [created, edited]
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
   grade:
-    if: ${{ !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
+    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' && !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
         with:
           ref: main
 
-      - name: Grade CP1 submission
+      - name: Grade CP1 submission and publish teacher score
         uses: actions/github-script@v7
         with:
           script: |
@@ -49,9 +49,7 @@ jobs:
             }
 
             async function publicText(url) {
-              const r = await fetch(url, {
-                headers: { 'User-Agent': 'KLIS-CS-CP1-Grader' }
-              });
+              const r = await fetch(url, { headers: { 'User-Agent': 'KLIS-CS-CP1-Grader' } });
               if (r.status === 404) return '';
               if (!r.ok) throw new Error(`Unable to read repository file (${r.status}).`);
               return await r.text();
@@ -65,6 +63,7 @@ jobs:
                 return {
                   score: Number(legacy[1]),
                   breakdown: null,
+                  feedback: '',
                   format: 'short'
                 };
               }
@@ -86,9 +85,13 @@ jobs:
 
               if (Object.values(breakdown).some(v => v === null)) return null;
 
+              const feedbackMatch = body.match(/(?:^|\n)\s*Feedback:\s*\n([\s\S]*)$/i);
+              const feedback = feedbackMatch?.[1]?.trim() || '';
+
               return {
                 score: breakdown.readme + breakdown.gitignore + breakdown.license + breakdown.reasoning,
                 breakdown,
+                feedback,
                 format: 'template'
               };
             }
@@ -101,7 +104,6 @@ jobs:
             let readme = '';
             let gitignore = '';
             let license = '';
-            let commitCount = 0;
 
             if (parsed) {
               const encodedOwner = encodeURIComponent(parsed.owner);
@@ -110,8 +112,6 @@ jobs:
               if (meta && meta.private === false) {
                 const branch = encodeURIComponent(meta.default_branch || 'main');
                 const base = `https://raw.githubusercontent.com/${encodedOwner}/${encodedRepo}/${branch}`;
-                const commits = await publicJson(`https://api.github.com/repos/${encodedOwner}/${encodedRepo}/commits?per_page=3`);
-                commitCount = Array.isArray(commits) ? commits.length : 0;
                 [readme, gitignore, license] = await Promise.all([
                   publicText(`${base}/README.md`),
                   publicText(`${base}/.gitignore`),
@@ -125,7 +125,6 @@ jobs:
               readme,
               gitignore,
               license,
-              commitCount,
               issueBody: issue.body || '',
               student
             });
@@ -151,7 +150,7 @@ jobs:
             ).join('\n');
 
             const status = result.automatic < 60
-              ? '🟡 **IN PROGRESS — fix the repository or submission, then edit this Issue to re-grade.**'
+              ? '🟡 **IN PROGRESS — fix the repository, then edit this submission Issue to re-grade.**'
               : !manual
                 ? '🔵 **AUTOMATIC CHECKS PASSED — awaiting teacher review.**'
                 : `✅ **FINAL SCORE: ${total}/100**`;
@@ -180,7 +179,7 @@ jobs:
             ].join('\n');
 
             const scoreBody = `${marker}
-            ## CP1 Automatic Check
+            ## CP1 Score — Mother Repository
 
             **Student:** @${student}  
             **Practice repository:** ${result.repositoryUrl || 'not provided'}  
@@ -201,11 +200,11 @@ jobs:
 
             **Current teacher breakdown:** ${breakdownText}
 
-            Copy the fixed template below into a **new comment**, replace the four scores, and add feedback. The workflow will calculate the teacher subtotal automatically.
+            Grade here in the mother repository. The published teacher score is then pulled into the student's own **CP1 — Score** Issue.
 
             ${teacherTemplate}
 
-            **How to improve the automatic score:** make changes in the practice repository, then edit this submission Issue (even a small edit) to run the grader again.
+            **Automatic re-grade:** make changes in the student repository, then edit this submission Issue to re-run the mother grader.
             `;
 
             const existing = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
@@ -213,6 +212,58 @@ jobs:
               await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: scoreBody });
             } else {
               await github.rest.issues.createComment({ owner, repo, issue_number: issueNumber, body: scoreBody });
+            }
+
+            if (manual && result.parsed?.owner) {
+              const gradeBranch = 'grades';
+              try {
+                await github.rest.git.getRef({ owner, repo, ref: `heads/${gradeBranch}` });
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                const mainRef = await github.rest.git.getRef({ owner, repo, ref: 'heads/main' });
+                await github.rest.git.createRef({
+                  owner,
+                  repo,
+                  ref: `refs/heads/${gradeBranch}`,
+                  sha: mainRef.data.object.sha
+                });
+              }
+
+              const gradeOwner = result.parsed.owner.toLowerCase();
+              const gradePath = `.cp1-grades/${gradeOwner}.json`;
+              const gradeData = {
+                version: 1,
+                student: gradeOwner,
+                repository: result.repositoryUrl,
+                automaticAtMother: result.automatic,
+                teacherScore: teacher,
+                finalAtMother: total,
+                grader: manual.grader,
+                breakdown: manual.breakdown,
+                feedback: manual.feedback || '',
+                submissionIssue: `https://github.com/${owner}/${repo}/issues/${issueNumber}`,
+                updatedAt: new Date().toISOString()
+              };
+
+              let gradeSha;
+              try {
+                const current = await github.rest.repos.getContent({
+                  owner, repo, path: gradePath, ref: gradeBranch
+                });
+                if (!Array.isArray(current.data)) gradeSha = current.data.sha;
+              } catch (error) {
+                if (error.status !== 404) throw error;
+              }
+
+              await github.rest.repos.createOrUpdateFileContents({
+                owner,
+                repo,
+                path: gradePath,
+                branch: gradeBranch,
+                message: `Publish CP1 teacher grade for ${gradeOwner}`,
+                content: Buffer.from(JSON.stringify(gradeData, null, 2) + '\n').toString('base64'),
+                ...(gradeSha ? { sha: gradeSha } : {})
+              });
             }
 
             await core.summary
