@@ -1,5 +1,5 @@
 name: CP1 Submission — Repository Setup
-description: Submit the public CP1 repository you completed from the official KLIS-CS template.
+description: Submit the public CP1 repository you created yourself and then modified locally.
 title: "[CP1] Repository Setup Submission"
 body:
   - type: markdown
@@ -13,7 +13,7 @@ body:
 
         `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 
-        Your repository must be **public**, owned by you, and must not be a fork or a copy of an unrelated template. The normal CP1 flow uses the official `KLIS-CS/GitHub-Repository-Setup` template.
+        Your repository must be **public**, owned by you, created manually from GitHub's **New repository** flow, and must not be a fork or template copy. It must also show evidence that you modified it after creation.
 
   - type: input
     id: repository_url
@@ -37,7 +37,7 @@ body:
     id: readme_reason
     attributes:
       label: README Explanation
-      description: What is the purpose of a README, and what information did you include in yours?
+      description: What is the purpose of a README, and what information did you add when you modified yours?
       placeholder: Explain in 2–4 sentences.
     validations:
       required: true
@@ -64,7 +64,7 @@ body:
     id: reflection
     attributes:
       label: Reflection
-      description: Which repository-setup decision required the most judgment, and why?
+      description: What was different about creating the repository versus modifying it after cloning, and which part required more judgment?
       placeholder: Explain in 2–4 sentences.
     validations:
       required: true
@@ -74,9 +74,11 @@ body:
     attributes:
       label: Integrity Check
       options:
-        - label: I did not fork another repository or use an unrelated template for this CP1 submission.
+        - label: I created this repository manually with GitHub New repository; I did not use a template or fork.
           required: true
-        - label: I replaced the starter README and created my own .gitignore and LICENSE choices.
+        - label: I cloned the repository and made a later modification commit after the initial repository-creation commit.
+          required: true
+        - label: I created my own README, .gitignore, and LICENSE choices.
           required: true
         - label: I did not include passwords, API keys, tokens, or other secrets in the repository.
           required: true
