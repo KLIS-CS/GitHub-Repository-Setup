@@ -1,8 +1,20 @@
 # Teacher Grading — Checkpoint 1
 
-Checkpoint 1 is an **issue-based assessment**, not a branch/PR exercise. Students create a new public repository themselves with **GitHub → New repository**, configure README / `.gitignore` / LICENSE, clone the repository locally, make a meaningful modification, commit it, push it back to GitHub, and then submit the repository URL through the central CP1 Issue Form.
+Checkpoint 1 is an **issue-based repository-setup assessment**. It does not use a feature branch or Pull Request.
 
-Students should **not** use the KLIS-CS CP1 repository as a template and should not fork another repository. CP1 deliberately tests both **repository creation** and **later modification**.
+Students create a public repository named:
+
+```text
+cp1-repository-setup-YOUR-GITHUB-USERNAME
+```
+
+Their finished repository must show these three files on `main`:
+
+```text
+README.md
+.gitignore
+LICENSE
+```
 
 Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
@@ -10,46 +22,38 @@ Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
 | Check | Points |
 |---|---:|
-| Repository is public, student-owned, correctly named, created from scratch, and has later modification evidence | 15 |
+| Repository is public, student-owned, correctly named, and not a fork/template copy | 15 |
 | `README.md` is meaningful and includes usable project/setup information | 15 |
 | `.gitignore` contains at least one real ignore rule | 10 |
-| LICENSE contains substantial license text | 10 |
-| All written submission responses are complete | 10 |
+| `LICENSE` contains substantial license text | 10 |
+| Written submission responses are complete | 10 |
 | **Automatic subtotal** | **60** |
-
-For the **creation + modification** row, the grader checks repository metadata and commit history. A repository created with a template or fork cannot receive full credit, and a repository with only its initial creation commit cannot receive full credit. The expected pattern is:
-
-```text
-Create repository on GitHub
-→ clone locally
-→ modify
-→ commit
-→ push
-```
 
 ## Teacher file review panel
 
-Each central CP1 submission Issue automatically gets a **CP1 Teacher Review Files** comment containing:
+Each CP1 Submission Issue automatically gets a **CP1 Teacher Review Files** comment containing:
 
-- a direct link to the student repository;
-- direct links to `README.md`, `.gitignore`, and `LICENSE`;
+- a direct link to the student's repository;
+- a direct link to `README.md`;
+- a direct link to `.gitignore`;
+- a direct link to `LICENSE`;
 - collapsible previews of all three files.
 
-This lets the teacher review the actual submitted files without searching through the student's GitHub account.
+This is the main teacher workflow: open the student's CP1 Submission Issue, review the three files there, then enter the manual grade in the same Issue.
 
 ## Manual Rubric — 40 points
 
 | Category | Full-credit evidence | Points |
 |---|---|---:|
 | README quality | Clear title, purpose, organization, and a useful setup/usage instruction | 10 |
-| `.gitignore` judgment | Rules are appropriate for the project and the explanation shows understanding of what should not be tracked | 10 |
-| LICENSE understanding | A real license is present and the student accurately explains what it communicates to other developers | 10 |
-| Reflection and repository judgment | Student clearly distinguishes creating the repository from modifying it after cloning and explains the choices made | 10 |
+| `.gitignore` judgment | Rules are appropriate and the explanation shows understanding | 10 |
+| LICENSE understanding | A real license is present and accurately explained | 10 |
+| Reasoning / reflection | Explanations are specific, accurate, and connected to the submitted repository | 10 |
 | **Total** |  | **40** |
 
 ## Entering the Teacher Grade
 
-Every student submission Issue automatically contains a fixed grading template:
+Use the fixed grading template shown by the bot in the Submission Issue:
 
 ```text
 /manual-grade
@@ -62,27 +66,12 @@ Feedback:
 Write concise feedback here.
 ```
 
-Copy that block into a **new comment**, replace the scores, and add feedback.
+Replace the four scores and add feedback. The workflow calculates the teacher subtotal and final score automatically.
 
-Example:
-
-```text
-/manual-grade
-README: 9/10
-.gitignore: 8/10
-LICENSE: 10/10
-Reasoning: 9/10
-
-Feedback:
-Clear repository setup. The .gitignore choices are mostly appropriate, but explain why each project-specific rule is needed.
-```
-
-The workflow calculates the teacher subtotal and combines it with the automatic score.
-
-The older short form remains supported:
+The older short form is still accepted:
 
 ```text
 /manual-grade 36
 ```
 
-The fixed four-category template is preferred because it records the rubric breakdown directly in the Issue.
+CP1 deliberately leaves branch / Pull Request workflow for CP2.
