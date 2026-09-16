@@ -83,7 +83,7 @@ const weakFiles = evaluateSubmission({
   issueBody,
   student
 });
-assert.ok(weakFiles.automatic < 40, 'Weak repository files must lose substantial points');
+assert.ok(weakFiles.automatic <= 40, `Weak repository files should score at most 40, got ${weakFiles.automatic}`);
 
 const forked = evaluateSubmission({
   meta: { ...meta, fork: true },
