@@ -30,8 +30,9 @@ Choosing what belongs in .gitignore required the most judgment because some file
 
 ### Integrity Check
 
-- [x] I did not fork another repository or use an unrelated template for this CP1 submission.
-- [x] I replaced the starter README and created my own .gitignore and LICENSE choices.
+- [x] I created this repository myself with GitHub → New repository; I did not fork or use a template.
+- [x] I chose the README, .gitignore, and LICENSE setup myself.
+- [x] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.
 - [x] I did not include passwords, API keys, tokens, or other secrets in the repository.
 `;
 
@@ -40,8 +41,7 @@ const meta = {
   fork: false,
   owner: { login: student },
   name: 'cp1-repository-setup-octocat',
-  default_branch: 'main',
-  template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' }
+  default_branch: 'main'
 };
 
 const readme = `# CP1 Repository Setup Practice
@@ -65,18 +65,18 @@ assert.strictEqual(parseRepoUrl('https://github.com/octocat/repo/blob/main/READM
 assert.strictEqual(extractSection(issueBody, 'GitHub Username'), 'octocat');
 
 const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student });
-assert.strictEqual(full.automatic, 60, `Expected official-template fixture to score 60, got ${full.automatic}`);
+assert.strictEqual(full.automatic, 60, `Expected from-scratch fixture to score 60, got ${full.automatic}`);
 assert.strictEqual(full.integrityConfirmed, true);
 
-const legacy = evaluateSubmission({
-  meta: { ...meta, template_repository: undefined },
+const templateCopy = evaluateSubmission({
+  meta: { ...meta, template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' } },
   readme,
   gitignore,
   license,
   issueBody,
   student
 });
-assert.strictEqual(legacy.automatic, 60, 'Legacy from-scratch CP1 submissions remain valid');
+assert.ok(templateCopy.automatic < 60, 'Template-created repository must not receive full CP1 credit');
 
 const wrongOwner = evaluateSubmission({
   meta: { ...meta, owner: { login: 'someone-else' } },
@@ -108,24 +108,18 @@ const forked = evaluateSubmission({
 });
 assert.ok(forked.automatic < 60, 'Forked repository must not receive full credit');
 
-const unrelatedTemplate = evaluateSubmission({
-  meta: { ...meta, template_repository: { full_name: 'someone/other-template' } },
+const noLocalModification = issueBody.replace(
+  '- [x] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.',
+  '- [ ] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.'
+);
+const missingModification = evaluateSubmission({
+  meta,
   readme,
   gitignore,
   license,
-  issueBody,
+  issueBody: noLocalModification,
   student
 });
-assert.ok(unrelatedTemplate.automatic < 60, 'Unrelated template must not receive full credit');
-
-const starterReadme = evaluateSubmission({
-  meta,
-  readme: '# CP1 — GitHub Repository Setup\n<!-- CP1-STARTER-README -->\n## Setup\nStarter instructions that have not been replaced by the student and should therefore not receive full README credit even though the file is long enough to look structured.',
-  gitignore,
-  license,
-  issueBody,
-  student
-});
-assert.ok(starterReadme.automatic < 60, 'Unreplaced starter README must lose points');
+assert.ok(missingModification.automatic < 60, 'Missing local modification confirmation must lose points');
 
 console.log('CP1 grader fixture tests passed.');
