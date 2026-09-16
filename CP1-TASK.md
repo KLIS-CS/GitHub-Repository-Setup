@@ -2,37 +2,27 @@
 
 **Time target:** 25 minutes
 
-## 1. Create the repository yourself
+## Your task
 
-Go to **GitHub → New repository**. Do not use a template and do not fork another repository.
-
-Create a **Public** repository in your own account named exactly:
+Create one **Public** GitHub repository in your own account named exactly:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
 ```
 
-During repository creation:
+Do not fork another repository and do not use **Use this template**.
 
-- add a `README.md`;
-- choose an appropriate `.gitignore` template;
-- choose a real open-source `LICENSE`.
+## CP1 rule — work on `main`
 
-This step assesses whether you can make the repository-setup decisions yourself.
+CP1 does **not** use a feature branch or Pull Request.
 
-## 2. Clone and inspect it locally
+Complete the required files directly on the repository's default `main` branch. You may work in the GitHub web interface or locally.
 
-Clone the repository to your computer. Then inspect the repository state before changing anything.
+Branch and Pull Request skills begin in CP2.
 
-```bash
-git status
-```
+## Required files
 
-You should know which repository you cloned and what branch you are on before making changes.
-
-## 3. Modify the repository locally
-
-Your finished repository must contain:
+Your finished repository root must contain all three files:
 
 ```text
 README.md
@@ -40,63 +30,57 @@ README.md
 LICENSE
 ```
 
-### README.md
+### `README.md`
 
-Improve the README so it includes:
+Your README must include:
 
 - an H1 project title;
 - a clear explanation of the repository;
 - a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
 - at least one useful instruction another developer could follow.
 
-### .gitignore
+### `.gitignore`
 
-Review the `.gitignore` created during repository setup. Keep or modify it so it contains at least one meaningful ignore rule appropriate for the project.
+Your `.gitignore` must contain at least one real ignore rule appropriate for the project.
 
-### LICENSE
-
-Confirm that the repository contains the complete text of the open-source license you selected and that you can explain what the license permits or requires.
-
-## 4. Commit and push your local modification
-
-Use the normal local Git workflow:
+Examples:
 
 ```text
-git status
-→ git add
-→ git status
-→ git commit
-→ git push
+node_modules/
+.env
+.DS_Store
+dist/
 ```
 
-Your repository should show a meaningful commit produced after the initial repository creation.
+### `LICENSE`
 
-CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
+Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
 
-## 5. Before you submit
+## Before you submit
 
-- [ ] I created the repository myself with **GitHub → New repository**
 - [ ] Repository name is exactly `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 - [ ] Repository is Public
 - [ ] Repository belongs to my GitHub account
-- [ ] Repository is not a fork and was not created with **Use this template**
-- [ ] `README.md` is useful and complete
-- [ ] `.gitignore` contains at least one real ignore rule
+- [ ] Repository is not a fork or template-generated copy
+- [ ] `README.md` is complete
+- [ ] `.gitignore` contains a meaningful rule
 - [ ] `LICENSE` contains complete license text
-- [ ] I cloned the repository locally and made a meaningful modification
-- [ ] I committed and pushed that modification
+- [ ] All finished files are visible on `main`
+- [ ] I did not create a feature branch or Pull Request for CP1
 - [ ] No passwords, tokens, API keys, or secrets were committed
 
-## 6. Submit CP1
+## Submit CP1
 
 [![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-0969da?style=for-the-badge&logo=github)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
-The central submission form asks for your repository URL, GitHub username, short explanations of your README / `.gitignore` / LICENSE decisions, and one reflection.
+Paste the **repository URL**, not a file URL.
 
-After submission:
+After submission, the CP1 Submission Issue will show the teacher direct links and previews for your:
 
 ```text
-Automatic grader → /60
-Teacher review → /40
-Final → /100
+README.md
+.gitignore
+LICENSE
 ```
+
+The grader then calculates the automatic score `/60`, and the teacher enters the manual score `/40` in the same submission Issue.
