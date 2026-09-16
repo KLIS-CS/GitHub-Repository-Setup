@@ -1,8 +1,8 @@
 # Teacher Grading — Checkpoint 1
 
-Checkpoint 1 is an **issue-based assessment**, not a branch/PR exercise. Students create a public CP1 repository from the official `KLIS-CS/GitHub-Repository-Setup` template, replace the starter README, create their own `.gitignore`, add a real LICENSE, and submit the repository URL through the central CP1 Issue Form.
+Checkpoint 1 is an **issue-based assessment**, not a branch/PR exercise. Students must create a new public repository manually from GitHub's **New repository** flow, initialize it with a README, clone it locally, modify the README, create `.gitignore`, add a real LICENSE, commit the changes, push them to `main`, and submit the repository URL through the central CP1 Issue Form.
 
-Legacy from-scratch CP1 submissions remain accepted by the grader.
+CP1 deliberately assesses both **creation** and **modification**. Template copies and forks do not receive full automatic credit.
 
 Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
@@ -10,8 +10,9 @@ Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
 | Check | Points |
 |---|---:|
-| Repository is public, student-owned, correctly named, not a fork/unrelated template | 15 |
-| Starter README has been replaced with a meaningful project README | 15 |
+| Repository is public, student-owned, correctly named, and created from scratch | 10 |
+| Repository has at least two commits, showing a later modification after initial creation | 5 |
+| `README.md` is a meaningful project README | 15 |
 | `.gitignore` contains at least one real ignore rule | 10 |
 | LICENSE contains substantial license text | 10 |
 | All written submission responses are complete | 10 |
@@ -34,7 +35,7 @@ This lets the teacher review the actual submitted files without searching throug
 | README quality | Clear title, purpose, organization, and a useful setup/usage instruction | 10 |
 | `.gitignore` judgment | Rules are appropriate for the project and the explanation shows understanding of what should not be tracked | 10 |
 | LICENSE understanding | A real license is present and the student accurately explains what it communicates to other developers | 10 |
-| Reflection and repository judgment | Responses are specific, accurate, and connected to the repository the student configured | 10 |
+| Reflection and repository judgment | Student clearly distinguishes creating the repository from modifying it after cloning and explains relevant decisions | 10 |
 | **Total** |  | **40** |
 
 ## Entering the Teacher Grade
