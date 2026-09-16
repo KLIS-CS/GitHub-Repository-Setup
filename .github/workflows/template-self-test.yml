@@ -49,12 +49,16 @@ jobs:
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js
 
-      - name: Confirm CP1 does not depend on CP2 workflow skills
+      - name: Confirm old branch-based CP1 design is gone
         shell: bash
         run: |
           set -euo pipefail
-          if grep -Eqi 'required branch|open a Pull Request|git push|git clone' README.md; then
-            echo 'CP1 README still depends on CP2 Git workflow skills.'
+          if grep -q 'cp1-YOUR-GITHUB-USERNAME' README.md; then
+            echo 'Old CP1 branch convention is still present.'
             exit 1
           fi
-          echo 'CP1 is isolated to repository-setup skills.'
+          if grep -q 'project/README.md' README.md; then
+            echo 'Old nested project/ assessment design is still present.'
+            exit 1
+          fi
+          echo 'CP1 now tests repository setup directly.'
