@@ -208,7 +208,8 @@ jobs:
             **Practice repository:** ${result.repositoryUrl || 'not provided'}  
             **Automatic score:** ${result.automatic}/60  
             **Teacher score:** ${manual ? `${teacher}/40 by @${manual.grader}` : 'awaiting review'}  
-            **Current total:** ${total}/100
+            **Current total:** ${total}/100  
+            **Final score:** ${manual ? `${total}/100` : 'pending teacher review'}
 
             | Check | Score | Evidence |
             |---|---:|---|
@@ -293,4 +294,5 @@ jobs:
               .addHeading(`CP1: ${total}/100`)
               .addRaw(`Automatic: ${result.automatic}/60\n`)
               .addRaw(`Teacher: ${manual ? `${teacher}/40` : 'awaiting review'}\n`)
+              .addRaw(`Final: ${manual ? `${total}/100` : 'pending teacher review'}\n`)
               .write();
