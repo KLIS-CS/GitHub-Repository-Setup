@@ -4,19 +4,11 @@ on:
   push:
     branches: [main]
     paths:
-      - 'README.md'
-      - 'CP1-TASK.md'
-      - 'TEACHER-GRADING.md'
       - '.github/**'
-      - 'tests/**'
   pull_request:
     branches: [main]
     paths:
-      - 'README.md'
-      - 'CP1-TASK.md'
-      - 'TEACHER-GRADING.md'
       - '.github/**'
-      - 'tests/**'
 
 permissions:
   contents: read
@@ -33,41 +25,54 @@ jobs:
         run: |
           set -euo pipefail
           for f in \
-            README.md \
-            CP1-TASK.md \
-            TEACHER-GRADING.md \
+            .github/README.md \
+            .github/admin/TEACHER-GRADING.md \
             .github/ISSUE_TEMPLATE/cp1-submission.yml \
             .github/ISSUE_TEMPLATE/config.yml \
             .github/workflows/grade.yml \
+            .github/workflows/student-score.yml \
             .github/workflows/teacher-review-files.yml \
             .github/scripts/cp1-utils.js \
-            tests/cp1-utils.test.js; do
+            .github/tests/cp1-utils.test.js; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-          grep -Fq 'COPY%20CP1%20EXERCISE' README.md
-          grep -Fq 'CP1-STARTER-README' README.md
-          grep -Fq 'does not use branches or Pull Requests' README.md
-          grep -Fq 'README.md' README.md
-          grep -Fq '.gitignore' README.md
-          grep -Fq 'LICENSE' README.md
-          grep -Fq 'Submit CP1' README.md
-          grep -Fq 'Copy the official exercise' CP1-TASK.md
-          grep -Fq 'work on `main`' CP1-TASK.md
+          grep -Fq 'CP1 — Score' .github/README.md
+          grep -Fq 'work directly on `main`' .github/README.md
+          grep -Fq 'README.md' .github/README.md
+          grep -Fq '.gitignore' .github/README.md
+          grep -Fq 'LICENSE' .github/README.md
+          grep -Fq 'Submit CP1' .github/README.md
+
+          grep -Fq 'mother-repository submission form' .github/ISSUE_TEMPLATE/cp1-submission.yml
           grep -Fq 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -Fq 'official KLIS-CS CP1 Copy Exercise' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -Fq 'did not create a feature branch or Pull Request' .github/ISSUE_TEMPLATE/cp1-submission.yml
+
+          grep -Fq "github.repository == 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/grade.yml
+          grep -Fq '.cp1-grades/' .github/workflows/grade.yml
+          grep -Fq "gradeBranch = 'grades'" .github/workflows/grade.yml
           grep -Fq '/manual-grade' .github/workflows/grade.yml
-          grep -Fq 'Teacher grading' .github/workflows/grade.yml
           grep -Fq 'README: 0/10' .github/workflows/grade.yml
           grep -Fq '.gitignore: 0/10' .github/workflows/grade.yml
           grep -Fq 'LICENSE: 0/10' .github/workflows/grade.yml
           grep -Fq 'Reasoning: 0/10' .github/workflows/grade.yml
-          grep -Fq 'Teacher File Review Panel' .github/workflows/teacher-review-files.yml
+
+          grep -Fq "github.repository != 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/student-score.yml
+          grep -Fq 'CP1 — Score' .github/workflows/student-score.yml
+          grep -Fq 'raw.githubusercontent.com/KLIS-CS/GitHub-Repository-Setup/grades' .github/workflows/student-score.yml
+          grep -Fq 'workflow_dispatch' .github/workflows/student-score.yml
+          grep -Fq 'schedule:' .github/workflows/student-score.yml
+
+          grep -Fq 'evaluateRepository' .github/scripts/cp1-utils.js
+          grep -Fq "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
+          grep -Fq 'mainIsDefault' .github/scripts/cp1-utils.js
+
+          grep -Fq 'Teacher Review Files' .github/workflows/teacher-review-files.yml
           grep -Fq 'README.md preview' .github/workflows/teacher-review-files.yml
           grep -Fq '.gitignore preview' .github/workflows/teacher-review-files.yml
           grep -Fq 'LICENSE preview' .github/workflows/teacher-review-files.yml
-          grep -Fq '60 automatic' TEACHER-GRADING.md
+
+          grep -Fq 'grades branch' .github/admin/TEACHER-GRADING.md
+          grep -Fq 'student repo pulls the teacher score' .github/admin/TEACHER-GRADING.md
 
       - name: Validate workflow YAML syntax
         shell: bash
@@ -75,14 +80,14 @@ jobs:
           ruby -e "require 'psych'; Dir['.github/workflows/*.yml'].each { |f| Psych.parse_file(f) }"
 
       - name: Run grader fixture tests
-        run: node tests/cp1-utils.test.js
+        run: node .github/tests/cp1-utils.test.js
 
-      - name: Confirm Copy Exercise + main-only CP1 contract
+      - name: Confirm one-repo architecture contract
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
-          grep -Fq 'starterReadmePresent' .github/scripts/cp1-utils.js
-          grep -Fq 'mainIsDefault' .github/scripts/cp1-utils.js
-          ! grep -Fq 'cp1-YOUR-GITHUB-USERNAME' README.md
-          echo 'CP1 uses the official Copy Exercise, grades three required files on main, and does not require a feature branch or PR.'
+          test ! -f README.md
+          test ! -f CP1-TASK.md
+          test ! -f TEACHER-GRADING.md
+          test ! -d tests
+          echo 'CP1 keeps student work at repository root and system/grading files under .github.'
