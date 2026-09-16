@@ -17,16 +17,7 @@ function parseRepoUrl(url) {
   return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
 }
 
-function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student }) {
-  const repositoryUrl = extractSection(issueBody, 'Practice Repository URL');
-  const statedUsername = extractSection(issueBody, 'GitHub Username').replace(/^@/, '').trim();
-  const readmeAnswer = extractSection(issueBody, 'README Explanation');
-  const gitignoreAnswer = extractSection(issueBody, '.gitignore Explanation');
-  const licenseAnswer = extractSection(issueBody, 'LICENSE Explanation');
-  const reflection = extractSection(issueBody, 'Reflection');
-  const integrity = extractSection(issueBody, 'Integrity Check');
-  const parsed = parseRepoUrl(repositoryUrl);
-
+function evaluateRepository({ meta, readme = '', gitignore = '', license = '', student, statedUsername = '' }) {
   const expectedRepo = `cp1-repository-setup-${student}`;
   const officialTemplate = 'klis-cs/github-repository-setup';
   const templateSource = meta?.template_repository?.full_name?.toLowerCase() || '';
@@ -35,7 +26,7 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   const ownerMatches = Boolean(
     meta &&
     meta.owner?.login?.toLowerCase() === student.toLowerCase() &&
-    statedUsername.toLowerCase() === student.toLowerCase()
+    (!statedUsername || statedUsername.toLowerCase() === student.toLowerCase())
   );
   const nameMatches = Boolean(meta && meta.name?.toLowerCase() === expectedRepo.toLowerCase());
   const sourceAllowed = Boolean(
@@ -45,10 +36,10 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   );
   const mainIsDefault = Boolean(meta && (meta.default_branch || '').toLowerCase() === 'main');
 
-  const starterReadmePresent = /CP1-STARTER-README/i.test(readme);
   const readmeExists = Boolean(readme.trim());
-  const readmeStructured = !starterReadmePresent && readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
-  const readmeHasSetup = !starterReadmePresent && /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
+  const readmeHasH1 = /^#\s+\S/m.test(readme);
+  const readmeSubstantial = readme.trim().length >= 120;
+  const readmeHasSetup = /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
 
   const ignoreExists = Boolean(gitignore.trim());
   const ignoreRules = gitignore
@@ -60,74 +51,95 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   const licenseExists = Boolean(license.trim());
   const licenseSubstantial = license.trim().length >= 400 && /(copyright|permission|license|licensed)/i.test(license);
 
-  const answerChecks = [
-    ['README explanation', readmeAnswer, 2],
-    ['.gitignore explanation', gitignoreAnswer, 2],
-    ['LICENSE explanation', licenseAnswer, 3],
-    ['Reflection', reflection, 3]
-  ];
-  const answerScore = answerChecks.reduce(
-    (sum, [, text, pts]) => sum + (text.trim().length >= 40 ? pts : 0),
-    0
-  );
-
   const repoSetupScore =
-    (repoAccessible ? 3 : 0) +
-    (ownerMatches ? 3 : 0) +
-    (nameMatches ? 3 : 0) +
-    (sourceAllowed ? 3 : 0) +
-    (mainIsDefault ? 3 : 0);
+    (repoAccessible ? 2 : 0) +
+    (ownerMatches ? 2 : 0) +
+    (nameMatches ? 2 : 0) +
+    (sourceAllowed ? 2 : 0) +
+    (mainIsDefault ? 2 : 0);
 
   const readmeScore =
     (readmeExists ? 5 : 0) +
-    (readmeStructured ? 5 : 0) +
+    (readmeHasH1 ? 5 : 0) +
+    (readmeSubstantial ? 5 : 0) +
     (readmeHasSetup ? 5 : 0);
 
-  const ignoreScore = (ignoreExists ? 5 : 0) + (ignoreMeaningful ? 5 : 0);
-  const licenseScore = (licenseExists ? 5 : 0) + (licenseSubstantial ? 5 : 0);
+  const ignoreScore = (ignoreExists ? 5 : 0) + (ignoreMeaningful ? 10 : 0);
+  const licenseScore = (licenseExists ? 5 : 0) + (licenseSubstantial ? 10 : 0);
 
-  const repoDetail = !parsed ? 'Enter the full repository URL, not a README or file URL.' :
-    !repoAccessible ? 'Repository not found or not public.' :
-    !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
+  const repoDetail = !repoAccessible ? 'Repository not found or not public.' :
+    !ownerMatches ? `Repository must belong to @${student}.` :
     !nameMatches ? `Repository must be named ${expectedRepo}.` :
     !sourceAllowed ? 'Use the official KLIS-CS CP1 Copy Exercise; forks and unrelated templates are not accepted.' :
     !mainIsDefault ? 'CP1 must use main as the default branch.' :
-    templateSource === officialTemplate ? 'Official CP1 Copy Exercise detected; repository is public, correctly named, student-owned, and uses main.' :
-    'Approved CP1 repository detected; repository is public, correctly named, student-owned, and uses main.';
+    templateSource === officialTemplate ? 'Official CP1 Copy Exercise detected; repository setup passed.' :
+    'Approved legacy CP1 repository detected; repository setup passed.';
 
   const checks = [
-    ['Repository setup', repoSetupScore, 15, repoDetail],
-    ['README.md', readmeScore, 15,
+    ['Repository setup', repoSetupScore, 10, repoDetail],
+    ['README.md', readmeScore, 20,
       !readmeExists ? 'README.md was not found at repository root.' :
-      starterReadmePresent ? 'Replace the copied CP1 starter README with your own README.' :
-      !readmeStructured ? 'Add an H1 title and at least 120 characters of useful content.' :
+      !readmeHasH1 ? 'Add an H1 project title.' :
+      !readmeSubstantial ? 'Add at least 120 characters of useful project information.' :
       !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
-      'README structure passed automatic checks.'],
-    ['.gitignore', ignoreScore, 10,
+      'README automatic checks passed.'],
+    ['.gitignore', ignoreScore, 15,
       !ignoreExists ? '.gitignore was not found at repository root.' :
       !ignoreMeaningful ? 'Add at least one non-comment ignore rule.' :
       `${ignoreRules.length} ignore rule(s) detected.`],
-    ['LICENSE', licenseScore, 10,
+    ['LICENSE', licenseScore, 15,
       !licenseExists ? 'LICENSE was not found at repository root.' :
       !licenseSubstantial ? 'LICENSE appears incomplete; use full license text.' :
-      'Substantial license text detected.'],
-    ['Written explanations', answerScore, 10,
-      answerScore === 10 ? 'All four responses contain substantive answers.' :
-      'Each explanation should contain at least about two complete sentences.']
+      'Substantial license text detected.']
   ];
+
+  return {
+    checks,
+    automatic: checks.reduce((sum, [, score]) => sum + score, 0),
+    expectedRepo,
+    templateSource,
+    officialTemplate
+  };
+}
+
+function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student }) {
+  const repositoryUrl = extractSection(issueBody, 'Practice Repository URL');
+  const statedUsername = extractSection(issueBody, 'GitHub Username').replace(/^@/, '').trim();
+  const readmeAnswer = extractSection(issueBody, 'README Explanation');
+  const gitignoreAnswer = extractSection(issueBody, '.gitignore Explanation');
+  const licenseAnswer = extractSection(issueBody, 'LICENSE Explanation');
+  const reflection = extractSection(issueBody, 'Reflection');
+  const integrity = extractSection(issueBody, 'Integrity Check');
+  const parsed = parseRepoUrl(repositoryUrl);
+
+  const repoResult = evaluateRepository({
+    meta,
+    readme,
+    gitignore,
+    license,
+    student,
+    statedUsername
+  });
 
   return {
     repositoryUrl,
     statedUsername,
     parsed,
     integrityConfirmed: /\[x\]/i.test(integrity),
-    checks,
-    automatic: checks.reduce((sum, [, score]) => sum + score, 0)
+    responses: {
+      readme: readmeAnswer,
+      gitignore: gitignoreAnswer,
+      license: licenseAnswer,
+      reflection
+    },
+    checks: repoResult.checks,
+    automatic: repoResult.automatic
   };
 }
 
 module.exports = {
   extractSection,
   parseRepoUrl,
+  evaluateRepository,
   evaluateSubmission
 };
