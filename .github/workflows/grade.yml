@@ -60,7 +60,6 @@ jobs:
             function parseManualGrade(body) {
               if (!body) return null;
 
-              // Backward-compatible short form: /manual-grade 36
               const legacy = body.match(/(?:^|\n)\s*\/manual-grade\s+(40|[0-3]?\d)(?:\s|$)/i);
               if (legacy) {
                 return {
@@ -70,7 +69,6 @@ jobs:
                 };
               }
 
-              // Preferred fixed-template form.
               if (!/(?:^|\n)\s*\/manual-grade\s*(?:\n|$)/i.test(body)) return null;
 
               const readTen = label => {
@@ -162,16 +160,18 @@ jobs:
                 ? 'Teacher used the short-form manual score.'
                 : 'Not graded yet.';
 
-            const teacherTemplate = `\`\`\`text
-/manual-grade
-README: 0/10
-.gitignore: 0/10
-LICENSE: 0/10
-Reasoning: 0/10
-
-Feedback:
-Write concise feedback here.
-\`\`\``;
+            const teacherTemplate = [
+              '```text',
+              '/manual-grade',
+              'README: 0/10',
+              '.gitignore: 0/10',
+              'LICENSE: 0/10',
+              'Reasoning: 0/10',
+              '',
+              'Feedback:',
+              'Write concise feedback here.',
+              '```'
+            ].join('\n');
 
             const scoreBody = `${marker}
             ## CP1 Automatic Check

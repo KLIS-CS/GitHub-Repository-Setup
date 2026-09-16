@@ -52,6 +52,11 @@ jobs:
           grep -q '60 automatic' TEACHER-GRADING.md
           grep -q 'fixed template' TEACHER-GRADING.md
 
+      - name: Validate workflow YAML syntax
+        shell: bash
+        run: |
+          ruby -e "require 'psych'; Psych.parse_file('.github/workflows/grade.yml'); Psych.parse_file('.github/workflows/template-self-test.yml')"
+
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js
 
