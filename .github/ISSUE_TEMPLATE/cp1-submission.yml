@@ -1,5 +1,5 @@
 name: CP1 Submission — Repository Setup
-description: Submit the public CP1 repository you completed from the official KLIS-CS template.
+description: Submit the public CP1 repository you created yourself from scratch.
 title: "[CP1] Repository Setup Submission"
 body:
   - type: markdown
@@ -13,7 +13,9 @@ body:
 
         `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 
-        Your repository must be **public**, owned by you, and must not be a fork or a copy of an unrelated template. The normal CP1 flow uses the official `KLIS-CS/GitHub-Repository-Setup` template.
+        Your repository must be **public**, owned by you, and created by you with **GitHub → New repository**. Do not fork another repository and do not use **Use this template**.
+
+        CP1 also requires you to clone the repository locally, make a meaningful modification, commit it, and push it back to GitHub.
 
   - type: input
     id: repository_url
@@ -64,7 +66,7 @@ body:
     id: reflection
     attributes:
       label: Reflection
-      description: Which repository-setup decision required the most judgment, and why?
+      description: Which repository-setup or local-modification decision required the most judgment, and why?
       placeholder: Explain in 2–4 sentences.
     validations:
       required: true
@@ -74,9 +76,11 @@ body:
     attributes:
       label: Integrity Check
       options:
-        - label: I did not fork another repository or use an unrelated template for this CP1 submission.
+        - label: I created this repository myself with GitHub → New repository; I did not fork or use a template.
           required: true
-        - label: I replaced the starter README and created my own .gitignore and LICENSE choices.
+        - label: I chose the README, .gitignore, and LICENSE setup myself.
+          required: true
+        - label: I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.
           required: true
         - label: I did not include passwords, API keys, tokens, or other secrets in the repository.
           required: true
