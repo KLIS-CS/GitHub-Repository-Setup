@@ -1,0 +1,80 @@
+name: CP1 Submission — Repository Setup
+description: Submit the public practice repository you created from scratch for Checkpoint 1.
+title: "[CP1] Repository Setup Submission"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Checkpoint 1 — Repository Setup
+
+        Create your practice repository first, then submit it here. The automatic grader will inspect the public repository and post your score in this Issue.
+
+        Required repository name:
+
+        `cp1-repository-setup-YOUR-GITHUB-USERNAME`
+
+        Your practice repository must be **public**, owned by you, and created from scratch — not a fork or template-generated copy.
+
+  - type: input
+    id: repository_url
+    attributes:
+      label: Practice Repository URL
+      description: Paste the full GitHub URL of the public repository you created for CP1.
+      placeholder: https://github.com/YOUR-USERNAME/cp1-repository-setup-YOUR-USERNAME
+    validations:
+      required: true
+
+  - type: input
+    id: github_username
+    attributes:
+      label: GitHub Username
+      description: Enter the GitHub username that owns the practice repository.
+      placeholder: octocat
+    validations:
+      required: true
+
+  - type: textarea
+    id: readme_reason
+    attributes:
+      label: README Explanation
+      description: What is the purpose of a README, and what information did you include in yours?
+      placeholder: Explain in 2–4 sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: gitignore_reason
+    attributes:
+      label: .gitignore Explanation
+      description: Which files or folders did you ignore, and why should they not be committed?
+      placeholder: Explain in 2–4 sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: license_reason
+    attributes:
+      label: LICENSE Explanation
+      description: Which license did you choose, and what does that license communicate to other people who may use your code?
+      placeholder: Explain in 2–4 sentences.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reflection
+    attributes:
+      label: Reflection
+      description: Which repository-setup decision required the most judgment, and why?
+      placeholder: Explain in 2–4 sentences.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: integrity
+    attributes:
+      label: Integrity Check
+      options:
+        - label: I created this practice repository myself and did not fork or generate it from a template.
+          required: true
+        - label: I did not include passwords, API keys, tokens, or other secrets in the practice repository.
+          required: true
