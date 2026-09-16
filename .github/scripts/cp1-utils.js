@@ -28,6 +28,7 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   const parsed = parseRepoUrl(repositoryUrl);
 
   const expectedRepo = `cp1-repository-setup-${student}`;
+  const officialTemplate = 'klis-cs/github-repository-setup';
   const templateSource = meta?.template_repository?.full_name?.toLowerCase() || '';
 
   const repoAccessible = Boolean(meta && meta.private === false);
@@ -37,11 +38,17 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     statedUsername.toLowerCase() === student.toLowerCase()
   );
   const nameMatches = Boolean(meta && meta.name?.toLowerCase() === expectedRepo.toLowerCase());
-  const createdByStudent = Boolean(meta && meta.fork === false && !templateSource);
+  const sourceAllowed = Boolean(
+    meta &&
+    meta.fork === false &&
+    (!templateSource || templateSource === officialTemplate)
+  );
+  const mainIsDefault = Boolean(meta && (meta.default_branch || '').toLowerCase() === 'main');
 
+  const starterReadmePresent = /CP1-STARTER-README/i.test(readme);
   const readmeExists = Boolean(readme.trim());
-  const readmeStructured = readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
-  const readmeHasSetup = /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
+  const readmeStructured = !starterReadmePresent && readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
+  const readmeHasSetup = !starterReadmePresent && /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
 
   const ignoreExists = Boolean(gitignore.trim());
   const ignoreRules = gitignore
@@ -65,10 +72,11 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   );
 
   const repoSetupScore =
-    (repoAccessible ? 4 : 0) +
-    (ownerMatches ? 4 : 0) +
-    (nameMatches ? 4 : 0) +
-    (createdByStudent ? 3 : 0);
+    (repoAccessible ? 3 : 0) +
+    (ownerMatches ? 3 : 0) +
+    (nameMatches ? 3 : 0) +
+    (sourceAllowed ? 3 : 0) +
+    (mainIsDefault ? 3 : 0);
 
   const readmeScore =
     (readmeExists ? 5 : 0) +
@@ -82,13 +90,16 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     !repoAccessible ? 'Repository not found or not public.' :
     !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
     !nameMatches ? `Repository must be named ${expectedRepo}.` :
-    !createdByStudent ? 'Repository must not be a fork or template-generated copy.' :
-    'Public, correctly named, student-owned repository.';
+    !sourceAllowed ? 'Use the official KLIS-CS CP1 Copy Exercise; forks and unrelated templates are not accepted.' :
+    !mainIsDefault ? 'CP1 must use main as the default branch.' :
+    templateSource === officialTemplate ? 'Official CP1 Copy Exercise detected; repository is public, correctly named, student-owned, and uses main.' :
+    'Approved CP1 repository detected; repository is public, correctly named, student-owned, and uses main.';
 
   const checks = [
     ['Repository setup', repoSetupScore, 15, repoDetail],
     ['README.md', readmeScore, 15,
       !readmeExists ? 'README.md was not found at repository root.' :
+      starterReadmePresent ? 'Replace the copied CP1 starter README with your own README.' :
       !readmeStructured ? 'Add an H1 title and at least 120 characters of useful content.' :
       !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
       'README structure passed automatic checks.'],
