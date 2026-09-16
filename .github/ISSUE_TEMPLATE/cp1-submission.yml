@@ -13,9 +13,9 @@ body:
 
         `cp1-repository-setup-YOUR-GITHUB-USERNAME`
 
-        Your repository must be **public**, owned by you, and created by you with **GitHub → New repository**. Do not fork another repository and do not use **Use this template**.
+        Start from the official **KLIS-CS CP1 Copy Exercise**, create the copy in your own account, keep it **Public**, and work directly on `main`.
 
-        CP1 uses the default `main` branch only. No feature branch or Pull Request is required.
+        CP1 does **not** use a feature branch or Pull Request.
 
         Your finished repository must contain `README.md`, `.gitignore`, and `LICENSE` at the repository root. The teacher will see direct links and previews of all three files in this submission Issue.
 
@@ -78,7 +78,9 @@ body:
     attributes:
       label: Integrity Check
       options:
-        - label: I created this repository myself with GitHub → New repository; I did not fork or use a template.
+        - label: I used the official KLIS-CS CP1 Copy Exercise and did not fork another repository.
+          required: true
+        - label: I worked on main and did not create a feature branch or Pull Request for CP1.
           required: true
         - label: My finished README.md, .gitignore, and LICENSE are all visible on main.
           required: true
