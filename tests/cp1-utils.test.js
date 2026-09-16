@@ -26,12 +26,13 @@ I chose the MIT License because it clearly allows reuse and modification while p
 
 ### Reflection
 
-Choosing what belongs in .gitignore required the most judgment because some files are source code while others are generated, local, or potentially sensitive. I had to decide what should be shared with collaborators.
+Creating the repository established the remote project and initial main branch, while modifying it required cloning, editing files, checking status, committing, and pushing. The modification step required more judgment because I had to decide what belonged in the README and .gitignore.
 
 ### Integrity Check
 
-- [x] I did not fork another repository or use an unrelated template for this CP1 submission.
-- [x] I replaced the starter README and created my own .gitignore and LICENSE choices.
+- [x] I created this repository manually with GitHub New repository; I did not use a template or fork.
+- [x] I cloned the repository and made a later modification commit after the initial repository-creation commit.
+- [x] I created my own README, .gitignore, and LICENSE choices.
 - [x] I did not include passwords, API keys, tokens, or other secrets in the repository.
 `;
 
@@ -40,8 +41,7 @@ const meta = {
   fork: false,
   owner: { login: student },
   name: 'cp1-repository-setup-octocat',
-  default_branch: 'main',
-  template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' }
+  default_branch: 'main'
 };
 
 const readme = `# CP1 Repository Setup Practice
@@ -64,25 +64,38 @@ assert.strictEqual(parseRepoUrl('not-a-url'), null);
 assert.strictEqual(parseRepoUrl('https://github.com/octocat/repo/blob/main/README.md'), null);
 assert.strictEqual(extractSection(issueBody, 'GitHub Username'), 'octocat');
 
-const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student });
-assert.strictEqual(full.automatic, 60, `Expected official-template fixture to score 60, got ${full.automatic}`);
+const full = evaluateSubmission({ meta, readme, gitignore, license, commitCount: 2, issueBody, student });
+assert.strictEqual(full.automatic, 60, `Expected from-scratch create-and-modify fixture to score 60, got ${full.automatic}`);
 assert.strictEqual(full.integrityConfirmed, true);
 
-const legacy = evaluateSubmission({
-  meta: { ...meta, template_repository: undefined },
+const oneCommitOnly = evaluateSubmission({
+  meta,
   readme,
   gitignore,
   license,
+  commitCount: 1,
   issueBody,
   student
 });
-assert.strictEqual(legacy.automatic, 60, 'Legacy from-scratch CP1 submissions remain valid');
+assert.strictEqual(oneCommitOnly.automatic, 55, 'A single-commit repository must lose the 5 modification-evidence points');
+
+const templateCopy = evaluateSubmission({
+  meta: { ...meta, template_repository: { full_name: 'KLIS-CS/GitHub-Repository-Setup' } },
+  readme,
+  gitignore,
+  license,
+  commitCount: 2,
+  issueBody,
+  student
+});
+assert.ok(templateCopy.automatic < 60, 'Template copies must not receive full CP1 credit');
 
 const wrongOwner = evaluateSubmission({
   meta: { ...meta, owner: { login: 'someone-else' } },
   readme,
   gitignore,
   license,
+  commitCount: 2,
   issueBody,
   student
 });
@@ -93,6 +106,7 @@ const weakFiles = evaluateSubmission({
   readme: '# Too short',
   gitignore: '# comments only',
   license: 'MIT',
+  commitCount: 2,
   issueBody,
   student
 });
@@ -103,29 +117,10 @@ const forked = evaluateSubmission({
   readme,
   gitignore,
   license,
+  commitCount: 2,
   issueBody,
   student
 });
 assert.ok(forked.automatic < 60, 'Forked repository must not receive full credit');
-
-const unrelatedTemplate = evaluateSubmission({
-  meta: { ...meta, template_repository: { full_name: 'someone/other-template' } },
-  readme,
-  gitignore,
-  license,
-  issueBody,
-  student
-});
-assert.ok(unrelatedTemplate.automatic < 60, 'Unrelated template must not receive full credit');
-
-const starterReadme = evaluateSubmission({
-  meta,
-  readme: '# CP1 — GitHub Repository Setup\n<!-- CP1-STARTER-README -->\n## Setup\nStarter instructions that have not been replaced by the student and should therefore not receive full README credit even though the file is long enough to look structured.',
-  gitignore,
-  license,
-  issueBody,
-  student
-});
-assert.ok(starterReadme.automatic < 60, 'Unreplaced starter README must lose points');
 
 console.log('CP1 grader fixture tests passed.');
