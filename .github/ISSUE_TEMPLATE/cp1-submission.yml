@@ -1,5 +1,5 @@
 name: CP1 Submission — Repository Setup
-description: Submit the public CP1 repository you created yourself from scratch.
+description: Submit your public CP1 repository for automatic and teacher review.
 title: "[CP1] Repository Setup Submission"
 body:
   - type: markdown
@@ -7,7 +7,7 @@ body:
       value: |
         ## Checkpoint 1 — Repository Setup
 
-        Complete your CP1 repository first, then submit it here. The automatic grader will inspect the public repository and post your score in this Issue.
+        Complete your CP1 repository first, then submit it here.
 
         Required repository name:
 
@@ -15,7 +15,9 @@ body:
 
         Your repository must be **public**, owned by you, and created by you with **GitHub → New repository**. Do not fork another repository and do not use **Use this template**.
 
-        CP1 also requires you to clone the repository locally, make a meaningful modification, commit it, and push it back to GitHub.
+        CP1 uses the default `main` branch only. No feature branch or Pull Request is required.
+
+        Your finished repository must contain `README.md`, `.gitignore`, and `LICENSE` at the repository root. The teacher will see direct links and previews of all three files in this submission Issue.
 
   - type: input
     id: repository_url
@@ -66,7 +68,7 @@ body:
     id: reflection
     attributes:
       label: Reflection
-      description: Which repository-setup or local-modification decision required the most judgment, and why?
+      description: Which repository-setup decision required the most judgment, and why?
       placeholder: Explain in 2–4 sentences.
     validations:
       required: true
@@ -78,9 +80,7 @@ body:
       options:
         - label: I created this repository myself with GitHub → New repository; I did not fork or use a template.
           required: true
-        - label: I chose the README, .gitignore, and LICENSE setup myself.
-          required: true
-        - label: I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.
+        - label: My finished README.md, .gitignore, and LICENSE are all visible on main.
           required: true
         - label: I did not include passwords, API keys, tokens, or other secrets in the repository.
           required: true
