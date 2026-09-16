@@ -17,7 +17,7 @@ function parseRepoUrl(url) {
   return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
 }
 
-function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student, commitCount = 0 }) {
+function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student }) {
   const repositoryUrl = extractSection(issueBody, 'Practice Repository URL');
   const statedUsername = extractSection(issueBody, 'GitHub Username').replace(/^@/, '').trim();
   const readmeAnswer = extractSection(issueBody, 'README Explanation');
@@ -37,13 +37,11 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     statedUsername.toLowerCase() === student.toLowerCase()
   );
   const nameMatches = Boolean(meta && meta.name?.toLowerCase() === expectedRepo.toLowerCase());
-  const createdFromScratch = Boolean(meta && meta.fork === false && !templateSource);
-  const hasModificationEvidence = Number(commitCount) >= 2;
+  const createdByStudent = Boolean(meta && meta.fork === false && !templateSource);
 
-  const starterReadmePresent = /CP1-STARTER-README/i.test(readme);
   const readmeExists = Boolean(readme.trim());
-  const readmeStructured = !starterReadmePresent && readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
-  const readmeHasSetup = !starterReadmePresent && /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
+  const readmeStructured = readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
+  const readmeHasSetup = /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
 
   const ignoreExists = Boolean(gitignore.trim());
   const ignoreRules = gitignore
@@ -67,11 +65,10 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
   );
 
   const repoSetupScore =
-    (repoAccessible ? 3 : 0) +
-    (ownerMatches ? 3 : 0) +
-    (nameMatches ? 3 : 0) +
-    (createdFromScratch ? 3 : 0) +
-    (hasModificationEvidence ? 3 : 0);
+    (repoAccessible ? 4 : 0) +
+    (ownerMatches ? 4 : 0) +
+    (nameMatches ? 4 : 0) +
+    (createdByStudent ? 3 : 0);
 
   const readmeScore =
     (readmeExists ? 5 : 0) +
@@ -85,15 +82,13 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     !repoAccessible ? 'Repository not found or not public.' :
     !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
     !nameMatches ? `Repository must be named ${expectedRepo}.` :
-    !createdFromScratch ? 'Create the repository yourself with GitHub → New repository; do not fork or use a template.' :
-    !hasModificationEvidence ? 'Repository creation detected, but no later modification commit was found. CP1 requires create first, then clone → modify → commit → push.' :
-    `Public, correctly named, student-owned repository created from scratch with ${commitCount} commit(s).`;
+    !createdByStudent ? 'Repository must not be a fork or template-generated copy.' :
+    'Public, correctly named, student-owned repository.';
 
   const checks = [
-    ['Repository creation + modification', repoSetupScore, 15, repoDetail],
+    ['Repository setup', repoSetupScore, 15, repoDetail],
     ['README.md', readmeScore, 15,
       !readmeExists ? 'README.md was not found at repository root.' :
-      starterReadmePresent ? 'Do not submit a starter/template README.' :
       !readmeStructured ? 'Add an H1 title and at least 120 characters of useful content.' :
       !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
       'README structure passed automatic checks.'],
