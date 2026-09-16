@@ -62,7 +62,7 @@ jobs:
           grep -q 'Reasoning: 0/10' .github/workflows/grade.yml
           grep -q 'Teacher Review Files' .github/workflows/teacher-review-files.yml
           grep -q '60 automatic' TEACHER-GRADING.md
-          grep -q 'fixed template' TEACHER-GRADING.md
+          grep -q 'fixed grading template' TEACHER-GRADING.md
 
       - name: Validate workflow YAML syntax
         shell: bash
