@@ -13,7 +13,7 @@ on:
       - '.github/scripts/cp1-utils.js'
   workflow_dispatch:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '*/5 * * * *'
 
 permissions:
   contents: read
@@ -97,7 +97,8 @@ jobs:
             **Repository:** https://github.com/${owner}/${repo}  
             **Automatic score:** ${result.automatic}/60  
             **Teacher score:** ${teacher === null ? 'awaiting review' : `${teacher}/40${grader ? ` by @${grader}` : ''}`}  
-            **Current total:** ${total}/100
+            **Current total:** ${total}/100  
+            **Final score:** ${teacher === null ? 'pending teacher review' : `${total}/100`}
 
             | Check | Score | Evidence |
             |---|---:|---|
@@ -116,7 +117,7 @@ jobs:
 
             https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml
 
-            After your teacher enters \`/manual-grade\` in the mother repository, this Score Issue refreshes automatically within about one hour. You can also run **Actions → CP1 — Student Score → Run workflow** to refresh immediately.
+            After your teacher enters \`/manual-grade\` in the mother repository, this Score Issue refreshes automatically within about five minutes. You can also run **Actions → CP1 — Student Score → Run workflow** to refresh immediately.
             `;
 
             const issues = await github.paginate(github.rest.issues.listForRepo, {
@@ -136,4 +137,5 @@ jobs:
               .addHeading(`CP1: ${total}/100`)
               .addRaw(`Automatic: ${result.automatic}/60\n`)
               .addRaw(`Teacher: ${teacher === null ? 'awaiting review' : `${teacher}/40`}\n`)
+              .addRaw(`Final: ${teacher === null ? 'pending teacher review' : `${total}/100`}\n`)
               .write();
