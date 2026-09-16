@@ -7,6 +7,10 @@ on:
       - 'README.md'
       - '.gitignore'
       - 'LICENSE'
+      - 'LICENSE.md'
+      - 'LICENSE.txt'
+      - '.github/workflows/student-score.yml'
+      - '.github/scripts/cp1-utils.js'
   workflow_dispatch:
   schedule:
     - cron: '17 * * * *'
@@ -33,13 +37,23 @@ jobs:
             const marker = '<!-- klis-cp1-local-score -->';
 
             const read = path => fs.existsSync(path) ? fs.readFileSync(path, 'utf8') : '';
+            const readmePresent = fs.existsSync('README.md');
+            const gitignorePresent = fs.existsSync('.gitignore');
+            const licenseCandidates = ['LICENSE', 'LICENSE.md', 'LICENSE.txt'];
+            const licensePath = licenseCandidates.find(path => fs.existsSync(path)) || 'LICENSE';
+            const licensePresent = licenseCandidates.some(path => fs.existsSync(path));
+
             const { data: meta } = await github.rest.repos.get({ owner, repo });
 
             const result = evaluateRepository({
               meta,
               readme: read('README.md'),
               gitignore: read('.gitignore'),
-              license: read('LICENSE'),
+              license: licensePresent ? read(licensePath) : '',
+              readmePresent,
+              gitignorePresent,
+              licensePresent,
+              licensePath,
               student: owner
             });
 
