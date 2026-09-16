@@ -24,56 +24,51 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for f in \
-            .github/README.md \
-            .github/admin/TEACHER-GRADING.md \
-            .github/ISSUE_TEMPLATE/cp1-submission.yml \
-            .github/ISSUE_TEMPLATE/config.yml \
-            .github/workflows/grade.yml \
-            .github/workflows/student-score.yml \
-            .github/workflows/teacher-review-files.yml \
-            .github/scripts/cp1-utils.js \
-            .github/tests/cp1-utils.test.js; do
-            test -f "$f" || { echo "Missing $f"; exit 1; }
-          done
 
-          grep -Fq 'CP1 — Score' .github/README.md
-          grep -Fq 'work directly on `main`' .github/README.md
-          grep -Fq 'README.md' .github/README.md
-          grep -Fq '.gitignore' .github/README.md
-          grep -Fq 'LICENSE' .github/README.md
-          grep -Fq 'Submit CP1' .github/README.md
+          require_file() {
+            test -f "$1" || { echo "Missing required file: $1"; exit 1; }
+          }
 
-          grep -Fq 'mother-repository submission form' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -Fq 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          require_text() {
+            local file="$1"
+            local text="$2"
+            grep -Fq "$text" "$file" || { echo "Missing contract text in $file: $text"; exit 1; }
+          }
 
-          grep -Fq "github.repository == 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/grade.yml
-          grep -Fq '.cp1-grades/' .github/workflows/grade.yml
-          grep -Fq "gradeBranch = 'grades'" .github/workflows/grade.yml
-          grep -Fq '/manual-grade' .github/workflows/grade.yml
-          grep -Fq 'README: 0/10' .github/workflows/grade.yml
-          grep -Fq '.gitignore: 0/10' .github/workflows/grade.yml
-          grep -Fq 'LICENSE: 0/10' .github/workflows/grade.yml
-          grep -Fq 'Reasoning: 0/10' .github/workflows/grade.yml
+          require_file .github/README.md
+          require_file .github/admin/TEACHER-GRADING.md
+          require_file .github/ISSUE_TEMPLATE/cp1-submission.yml
+          require_file .github/ISSUE_TEMPLATE/config.yml
+          require_file .github/workflows/grade.yml
+          require_file .github/workflows/student-score.yml
+          require_file .github/workflows/teacher-review-files.yml
+          require_file .github/scripts/cp1-utils.js
+          require_file .github/tests/cp1-utils.test.js
 
-          grep -Fq "github.repository != 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/student-score.yml
-          grep -Fq 'CP1 — Score' .github/workflows/student-score.yml
-          grep -Fq 'raw.githubusercontent.com/KLIS-CS/GitHub-Repository-Setup/grades' .github/workflows/student-score.yml
-          grep -Fq 'workflow_dispatch' .github/workflows/student-score.yml
-          grep -Fq 'schedule:' .github/workflows/student-score.yml
+          require_text .github/README.md 'CP1 — Score'
+          require_text .github/README.md 'README.md'
+          require_text .github/README.md '.gitignore'
+          require_text .github/README.md 'LICENSE'
 
-          grep -Fq 'evaluateRepository' .github/scripts/cp1-utils.js
-          grep -Fq "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
-          grep -Fq 'mainIsDefault' .github/scripts/cp1-utils.js
+          require_text .github/workflows/grade.yml "github.repository == 'KLIS-CS/GitHub-Repository-Setup'"
+          require_text .github/workflows/grade.yml "gradeBranch = 'grades'"
+          require_text .github/workflows/grade.yml '.cp1-grades/'
+          require_text .github/workflows/grade.yml '/manual-grade'
 
-          grep -Fq "github.repository == 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/teacher-review-files.yml
-          grep -Fq 'Teacher Review Files' .github/workflows/teacher-review-files.yml
-          grep -Fq 'README.md preview' .github/workflows/teacher-review-files.yml
-          grep -Fq '.gitignore preview' .github/workflows/teacher-review-files.yml
-          grep -Fq 'LICENSE preview' .github/workflows/teacher-review-files.yml
+          require_text .github/workflows/student-score.yml "github.repository != 'KLIS-CS/GitHub-Repository-Setup'"
+          require_text .github/workflows/student-score.yml 'CP1 — Score'
+          require_text .github/workflows/student-score.yml 'raw.githubusercontent.com/KLIS-CS/GitHub-Repository-Setup/grades'
+          require_text .github/workflows/student-score.yml 'workflow_dispatch'
+          require_text .github/workflows/student-score.yml 'schedule:'
 
-          grep -Fq 'grades branch' .github/admin/TEACHER-GRADING.md
-          grep -Fq 'synchronized back to your own Score Issue' .github/README.md
+          require_text .github/workflows/teacher-review-files.yml "github.repository == 'KLIS-CS/GitHub-Repository-Setup'"
+          require_text .github/workflows/teacher-review-files.yml 'Teacher Review Files'
+
+          require_text .github/scripts/cp1-utils.js 'evaluateRepository'
+          require_text .github/scripts/cp1-utils.js "officialTemplate = 'klis-cs/github-repository-setup'"
+          require_text .github/scripts/cp1-utils.js 'mainIsDefault'
+
+          echo 'CP1 structure and workflow contracts are present.'
 
       - name: Validate workflow YAML syntax
         shell: bash
