@@ -50,7 +50,7 @@ jobs:
 
             async function publicText(url) {
               const r = await fetch(url, { headers: { 'User-Agent': 'KLIS-CS-CP1-Grader' } });
-              if (r.status === 404) return '';
+              if (r.status === 404) return null;
               if (!r.ok) throw new Error(`Unable to read repository file (${r.status}).`);
               return await r.text();
             }
@@ -104,6 +104,10 @@ jobs:
             let readme = '';
             let gitignore = '';
             let license = '';
+            let readmePresent = false;
+            let gitignorePresent = false;
+            let licensePresent = false;
+            let licensePath = 'LICENSE';
 
             if (parsed) {
               const encodedOwner = encodeURIComponent(parsed.owner);
@@ -112,11 +116,26 @@ jobs:
               if (meta && meta.private === false) {
                 const branch = encodeURIComponent(meta.default_branch || 'main');
                 const base = `https://raw.githubusercontent.com/${encodedOwner}/${encodedRepo}/${branch}`;
-                [readme, gitignore, license] = await Promise.all([
+
+                const [readmeResult, gitignoreResult] = await Promise.all([
                   publicText(`${base}/README.md`),
-                  publicText(`${base}/.gitignore`),
-                  publicText(`${base}/LICENSE`)
+                  publicText(`${base}/.gitignore`)
                 ]);
+
+                readmePresent = readmeResult !== null;
+                gitignorePresent = gitignoreResult !== null;
+                readme = readmeResult ?? '';
+                gitignore = gitignoreResult ?? '';
+
+                for (const candidate of ['LICENSE', 'LICENSE.md', 'LICENSE.txt']) {
+                  const value = await publicText(`${base}/${candidate}`);
+                  if (value !== null) {
+                    licensePresent = true;
+                    licensePath = candidate;
+                    license = value;
+                    break;
+                  }
+                }
               }
             }
 
@@ -125,6 +144,10 @@ jobs:
               readme,
               gitignore,
               license,
+              readmePresent,
+              gitignorePresent,
+              licensePresent,
+              licensePath,
               issueBody: issue.body || '',
               student
             });
