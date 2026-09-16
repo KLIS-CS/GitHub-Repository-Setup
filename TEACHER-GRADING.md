@@ -1,12 +1,14 @@
 # Teacher Grading — Checkpoint 1
 
-Checkpoint 1 is an **issue-based repository-setup assessment**. It does not use a feature branch or Pull Request.
+Checkpoint 1 uses the official **Copy Exercise** but does **not** use a feature branch or Pull Request.
 
-Students create a public repository named:
+Students create their own copy from `KLIS-CS/GitHub-Repository-Setup`, name it:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
 ```
+
+and complete the assessed files directly on the default `main` branch.
 
 Their finished repository must show these three files on `main`:
 
@@ -22,12 +24,14 @@ Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
 | Check | Points |
 |---|---:|
-| Repository is public, student-owned, correctly named, and not a fork/template copy | 15 |
-| `README.md` is meaningful and includes usable project/setup information | 15 |
+| Repository is public, student-owned, correctly named, uses `main`, and comes from the approved CP1 source | 15 |
+| `README.md` is the student's own finished README, not the copied starter, and includes usable project/setup information | 15 |
 | `.gitignore` contains at least one real ignore rule | 10 |
 | `LICENSE` contains substantial license text | 10 |
 | Written submission responses are complete | 10 |
 | **Automatic subtotal** | **60** |
+
+The grader accepts the official CP1 template source and also keeps compatibility with older approved CP1 repositories created before the Copy Exercise flow was restored. Forks and unrelated templates do not receive full repository-setup credit.
 
 ## Teacher file review panel
 
@@ -74,4 +78,4 @@ The older short form is still accepted:
 /manual-grade 36
 ```
 
-CP1 deliberately leaves branch / Pull Request workflow for CP2.
+CP1 deliberately leaves feature-branch and Pull Request workflow for CP2.
