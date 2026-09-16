@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   review-files:
-    if: ${{ github.actor != 'github-actions[bot]' && !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
+    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' && github.actor != 'github-actions[bot]' && !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
     runs-on: ubuntu-latest
 
     steps:
