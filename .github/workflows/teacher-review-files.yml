@@ -99,11 +99,21 @@ jobs:
                 const blobBranch = branch.split('/').map(encodeURIComponent).join('/');
                 const repoBase = `https://github.com/${encodeURIComponent(studentOwner)}/${encodeURIComponent(studentRepo)}`;
 
-                const [readme, gitignore, license] = await Promise.all([
+                const [readme, gitignore] = await Promise.all([
                   publicText(`${rawBase}/README.md`),
-                  publicText(`${rawBase}/.gitignore`),
-                  publicText(`${rawBase}/LICENSE`)
+                  publicText(`${rawBase}/.gitignore`)
                 ]);
+
+                let license = null;
+                let licensePath = 'LICENSE';
+                for (const candidate of ['LICENSE', 'LICENSE.md', 'LICENSE.txt']) {
+                  const value = await publicText(`${rawBase}/${candidate}`);
+                  if (value !== null) {
+                    license = value;
+                    licensePath = candidate;
+                    break;
+                  }
+                }
 
                 body = [
                   marker,
@@ -116,7 +126,9 @@ jobs:
                   '',
                   `- [README.md](${repoBase}/blob/${blobBranch}/README.md)`,
                   `- [.gitignore](${repoBase}/blob/${blobBranch}/.gitignore)`,
-                  `- [LICENSE](${repoBase}/blob/${blobBranch}/LICENSE)`,
+                  license === null
+                    ? '- LICENSE / LICENSE.md / LICENSE.txt: _not found_'
+                    : `- [${licensePath}](${repoBase}/blob/${blobBranch}/${licensePath})`,
                   '',
                   '<details>',
                   '<summary><strong>README.md preview</strong></summary>',
@@ -131,7 +143,7 @@ jobs:
                   '</details>',
                   '',
                   '<details>',
-                  '<summary><strong>LICENSE preview</strong></summary>',
+                  `<summary><strong>${licensePath} preview</strong></summary>`,
                   '',
                   preview(license, 8000),
                   '</details>',
