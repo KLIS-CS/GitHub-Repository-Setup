@@ -17,7 +17,18 @@ function parseRepoUrl(url) {
   return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
 }
 
-function evaluateRepository({ meta, readme = '', gitignore = '', license = '', student, statedUsername = '' }) {
+function evaluateRepository({
+  meta,
+  readme = '',
+  gitignore = '',
+  license = '',
+  readmePresent,
+  gitignorePresent,
+  licensePresent,
+  licensePath = 'LICENSE',
+  student,
+  statedUsername = ''
+}) {
   const expectedRepo = `cp1-repository-setup-${student}`;
   const officialTemplate = 'klis-cs/github-repository-setup';
   const templateSource = meta?.template_repository?.full_name?.toLowerCase() || '';
@@ -36,19 +47,20 @@ function evaluateRepository({ meta, readme = '', gitignore = '', license = '', s
   );
   const mainIsDefault = Boolean(meta && (meta.default_branch || '').toLowerCase() === 'main');
 
-  const readmeExists = Boolean(readme.trim());
+  const hasReadme = readmePresent ?? Boolean(readme.trim());
+  const hasGitignore = gitignorePresent ?? Boolean(gitignore.trim());
+  const hasLicense = licensePresent ?? Boolean(license.trim());
+
   const readmeHasH1 = /^#\s+\S/m.test(readme);
   const readmeSubstantial = readme.trim().length >= 120;
   const readmeHasSetup = /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
 
-  const ignoreExists = Boolean(gitignore.trim());
   const ignoreRules = gitignore
     .split(/\r?\n/)
     .map(x => x.trim())
     .filter(x => x && !x.startsWith('#'));
   const ignoreMeaningful = ignoreRules.length > 0;
 
-  const licenseExists = Boolean(license.trim());
   const licenseSubstantial = license.trim().length >= 400 && /(copyright|permission|license|licensed)/i.test(license);
 
   const repoSetupScore =
@@ -59,13 +71,13 @@ function evaluateRepository({ meta, readme = '', gitignore = '', license = '', s
     (mainIsDefault ? 2 : 0);
 
   const readmeScore =
-    (readmeExists ? 5 : 0) +
+    (hasReadme ? 5 : 0) +
     (readmeHasH1 ? 5 : 0) +
     (readmeSubstantial ? 5 : 0) +
     (readmeHasSetup ? 5 : 0);
 
-  const ignoreScore = (ignoreExists ? 5 : 0) + (ignoreMeaningful ? 10 : 0);
-  const licenseScore = (licenseExists ? 5 : 0) + (licenseSubstantial ? 10 : 0);
+  const ignoreScore = (hasGitignore ? 5 : 0) + (ignoreMeaningful ? 10 : 0);
+  const licenseScore = (hasLicense ? 5 : 0) + (licenseSubstantial ? 10 : 0);
 
   const repoDetail = !repoAccessible ? 'Repository not found or not public.' :
     !ownerMatches ? `Repository must belong to @${student}.` :
@@ -78,19 +90,20 @@ function evaluateRepository({ meta, readme = '', gitignore = '', license = '', s
   const checks = [
     ['Repository setup', repoSetupScore, 10, repoDetail],
     ['README.md', readmeScore, 20,
-      !readmeExists ? 'README.md was not found at repository root.' :
+      !hasReadme ? 'README.md was not found at repository root.' :
+      !readme.trim() ? 'README.md exists, but it is empty. Add your project information.' :
       !readmeHasH1 ? 'Add an H1 project title.' :
       !readmeSubstantial ? 'Add at least 120 characters of useful project information.' :
       !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
       'README automatic checks passed.'],
     ['.gitignore', ignoreScore, 15,
-      !ignoreExists ? '.gitignore was not found at repository root.' :
-      !ignoreMeaningful ? 'Add at least one non-comment ignore rule.' :
+      !hasGitignore ? '.gitignore was not found at repository root.' :
+      !ignoreMeaningful ? '.gitignore exists; add at least one non-comment ignore rule.' :
       `${ignoreRules.length} ignore rule(s) detected.`],
     ['LICENSE', licenseScore, 15,
-      !licenseExists ? 'LICENSE was not found at repository root.' :
-      !licenseSubstantial ? 'LICENSE appears incomplete; use full license text.' :
-      'Substantial license text detected.']
+      !hasLicense ? 'No license file found. Use LICENSE, LICENSE.md, or LICENSE.txt at repository root.' :
+      !licenseSubstantial ? `${licensePath} exists but appears incomplete; add the full license text.` :
+      `${licensePath} detected with substantial license text.`]
   ];
 
   return {
@@ -98,11 +111,23 @@ function evaluateRepository({ meta, readme = '', gitignore = '', license = '', s
     automatic: checks.reduce((sum, [, score]) => sum + score, 0),
     expectedRepo,
     templateSource,
-    officialTemplate
+    officialTemplate,
+    detectedLicensePath: hasLicense ? licensePath : null
   };
 }
 
-function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', issueBody = '', student }) {
+function evaluateSubmission({
+  meta,
+  readme = '',
+  gitignore = '',
+  license = '',
+  readmePresent,
+  gitignorePresent,
+  licensePresent,
+  licensePath = 'LICENSE',
+  issueBody = '',
+  student
+}) {
   const repositoryUrl = extractSection(issueBody, 'Practice Repository URL');
   const statedUsername = extractSection(issueBody, 'GitHub Username').replace(/^@/, '').trim();
   const readmeAnswer = extractSection(issueBody, 'README Explanation');
@@ -117,6 +142,10 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
     readme,
     gitignore,
     license,
+    readmePresent,
+    gitignorePresent,
+    licensePresent,
+    licensePath,
     student,
     statedUsername
   });
@@ -133,7 +162,8 @@ function evaluateSubmission({ meta, readme = '', gitignore = '', license = '', i
       reflection
     },
     checks: repoResult.checks,
-    automatic: repoResult.automatic
+    automatic: repoResult.automatic,
+    detectedLicensePath: repoResult.detectedLicensePath
   };
 }
 
