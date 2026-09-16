@@ -66,13 +66,14 @@ jobs:
           grep -Fq "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
           grep -Fq 'mainIsDefault' .github/scripts/cp1-utils.js
 
+          grep -Fq "github.repository == 'KLIS-CS/GitHub-Repository-Setup'" .github/workflows/teacher-review-files.yml
           grep -Fq 'Teacher Review Files' .github/workflows/teacher-review-files.yml
           grep -Fq 'README.md preview' .github/workflows/teacher-review-files.yml
           grep -Fq '.gitignore preview' .github/workflows/teacher-review-files.yml
           grep -Fq 'LICENSE preview' .github/workflows/teacher-review-files.yml
 
           grep -Fq 'grades branch' .github/admin/TEACHER-GRADING.md
-          grep -Fq 'student repo pulls the teacher score' .github/admin/TEACHER-GRADING.md
+          grep -Fq 'synchronized back to your own Score Issue' .github/README.md
 
       - name: Validate workflow YAML syntax
         shell: bash
