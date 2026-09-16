@@ -45,14 +45,18 @@ jobs:
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-          grep -Fq 'CP1 does not use branches or Pull Requests' README.md
+          grep -Fq 'COPY%20CP1%20EXERCISE' README.md
+          grep -Fq 'CP1-STARTER-README' README.md
+          grep -Fq 'does not use branches or Pull Requests' README.md
           grep -Fq 'README.md' README.md
           grep -Fq '.gitignore' README.md
           grep -Fq 'LICENSE' README.md
           grep -Fq 'Submit CP1' README.md
+          grep -Fq 'Copy the official exercise' CP1-TASK.md
           grep -Fq 'work on `main`' CP1-TASK.md
           grep -Fq 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -Fq 'No feature branch or Pull Request is required' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -Fq 'official KLIS-CS CP1 Copy Exercise' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -Fq 'did not create a feature branch or Pull Request' .github/ISSUE_TEMPLATE/cp1-submission.yml
           grep -Fq '/manual-grade' .github/workflows/grade.yml
           grep -Fq 'Teacher grading' .github/workflows/grade.yml
           grep -Fq 'README: 0/10' .github/workflows/grade.yml
@@ -73,11 +77,12 @@ jobs:
       - name: Run grader fixture tests
         run: node tests/cp1-utils.test.js
 
-      - name: Confirm main-only CP1 contract
+      - name: Confirm Copy Exercise + main-only CP1 contract
         shell: bash
         run: |
           set -euo pipefail
-          ! grep -Fq 'hasModificationEvidence' .github/scripts/cp1-utils.js
-          ! grep -Fq 'commitCount' .github/scripts/cp1-utils.js
+          grep -Fq "officialTemplate = 'klis-cs/github-repository-setup'" .github/scripts/cp1-utils.js
+          grep -Fq 'starterReadmePresent' .github/scripts/cp1-utils.js
+          grep -Fq 'mainIsDefault' .github/scripts/cp1-utils.js
           ! grep -Fq 'cp1-YOUR-GITHUB-USERNAME' README.md
-          echo 'CP1 grades repository setup and the three required files without a feature-branch requirement.'
+          echo 'CP1 uses the official Copy Exercise, grades three required files on main, and does not require a feature branch or PR.'
