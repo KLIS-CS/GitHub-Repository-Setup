@@ -64,8 +64,8 @@ assert.strictEqual(parseRepoUrl('not-a-url'), null);
 assert.strictEqual(parseRepoUrl('https://github.com/octocat/repo/blob/main/README.md'), null);
 assert.strictEqual(extractSection(issueBody, 'GitHub Username'), 'octocat');
 
-const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student });
-assert.strictEqual(full.automatic, 60, `Expected from-scratch fixture to score 60, got ${full.automatic}`);
+const full = evaluateSubmission({ meta, readme, gitignore, license, issueBody, student, commitCount: 2 });
+assert.strictEqual(full.automatic, 60, `Expected from-scratch create-and-modify fixture to score 60, got ${full.automatic}`);
 assert.strictEqual(full.integrityConfirmed, true);
 
 const templateCopy = evaluateSubmission({
@@ -74,7 +74,8 @@ const templateCopy = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student
+  student,
+  commitCount: 2
 });
 assert.ok(templateCopy.automatic < 60, 'Template-created repository must not receive full CP1 credit');
 
@@ -84,7 +85,8 @@ const wrongOwner = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student
+  student,
+  commitCount: 2
 });
 assert.ok(wrongOwner.automatic < 60, 'Wrong repository owner must lose points');
 
@@ -94,7 +96,8 @@ const weakFiles = evaluateSubmission({
   gitignore: '# comments only',
   license: 'MIT',
   issueBody,
-  student
+  student,
+  commitCount: 2
 });
 assert.ok(weakFiles.automatic <= 40, `Weak repository files should score at most 40, got ${weakFiles.automatic}`);
 
@@ -104,22 +107,20 @@ const forked = evaluateSubmission({
   gitignore,
   license,
   issueBody,
-  student
+  student,
+  commitCount: 2
 });
 assert.ok(forked.automatic < 60, 'Forked repository must not receive full credit');
 
-const noLocalModification = issueBody.replace(
-  '- [x] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.',
-  '- [ ] I cloned the repository locally, made a meaningful modification, committed it, and pushed it back to GitHub.'
-);
-const missingModification = evaluateSubmission({
+const onlyCreationCommit = evaluateSubmission({
   meta,
   readme,
   gitignore,
   license,
-  issueBody: noLocalModification,
-  student
+  issueBody,
+  student,
+  commitCount: 1
 });
-assert.ok(missingModification.automatic < 60, 'Missing local modification confirmation must lose points');
+assert.ok(onlyCreationCommit.automatic < 60, 'A repository with only the creation commit must lose modification points even if the integrity box is checked');
 
 console.log('CP1 grader fixture tests passed.');

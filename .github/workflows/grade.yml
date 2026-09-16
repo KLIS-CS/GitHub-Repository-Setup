@@ -101,12 +101,17 @@ jobs:
             let readme = '';
             let gitignore = '';
             let license = '';
+            let commitCount = 0;
 
             if (parsed) {
-              meta = await publicJson(`https://api.github.com/repos/${encodeURIComponent(parsed.owner)}/${encodeURIComponent(parsed.repo)}`);
+              const encodedOwner = encodeURIComponent(parsed.owner);
+              const encodedRepo = encodeURIComponent(parsed.repo);
+              meta = await publicJson(`https://api.github.com/repos/${encodedOwner}/${encodedRepo}`);
               if (meta && meta.private === false) {
                 const branch = encodeURIComponent(meta.default_branch || 'main');
-                const base = `https://raw.githubusercontent.com/${encodeURIComponent(parsed.owner)}/${encodeURIComponent(parsed.repo)}/${branch}`;
+                const base = `https://raw.githubusercontent.com/${encodedOwner}/${encodedRepo}/${branch}`;
+                const commits = await publicJson(`https://api.github.com/repos/${encodedOwner}/${encodedRepo}/commits?per_page=3`);
+                commitCount = Array.isArray(commits) ? commits.length : 0;
                 [readme, gitignore, license] = await Promise.all([
                   publicText(`${base}/README.md`),
                   publicText(`${base}/.gitignore`),
@@ -120,6 +125,7 @@ jobs:
               readme,
               gitignore,
               license,
+              commitCount,
               issueBody: issue.body || '',
               student
             });

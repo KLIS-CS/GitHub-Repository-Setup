@@ -45,22 +45,22 @@ jobs:
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
 
-          grep -q 'GitHub → New repository' README.md
-          grep -q 'do NOT copy this repository' README.md
-          grep -q 'Submit CP1' README.md
-          grep -q 'Create the repository yourself' CP1-TASK.md
-          grep -q 'clone the repository' CP1-TASK.md
-          grep -q 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -q 'did not fork or use a template' .github/ISSUE_TEMPLATE/cp1-submission.yml
-          grep -q '/manual-grade' .github/workflows/grade.yml
-          grep -q 'Teacher grading' .github/workflows/grade.yml
-          grep -q 'README: 0/10' .github/workflows/grade.yml
-          grep -q '.gitignore: 0/10' .github/workflows/grade.yml
-          grep -q 'LICENSE: 0/10' .github/workflows/grade.yml
-          grep -q 'Reasoning: 0/10' .github/workflows/grade.yml
-          grep -q 'Teacher Review Files' .github/workflows/teacher-review-files.yml
-          grep -q '60 automatic' TEACHER-GRADING.md
-          grep -q 'fixed grading template' TEACHER-GRADING.md
+          grep -Fq 'GitHub → New repository' README.md
+          grep -Fq 'do NOT copy this repository' README.md
+          grep -Fq 'Submit CP1' README.md
+          grep -Fq 'Create the repository yourself' CP1-TASK.md
+          grep -Fqi 'clone the repository' CP1-TASK.md
+          grep -Fq 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -Fq 'did not fork or use a template' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -Fq '/manual-grade' .github/workflows/grade.yml
+          grep -Fq 'Teacher grading' .github/workflows/grade.yml
+          grep -Fq 'README: 0/10' .github/workflows/grade.yml
+          grep -Fq '.gitignore: 0/10' .github/workflows/grade.yml
+          grep -Fq 'LICENSE: 0/10' .github/workflows/grade.yml
+          grep -Fq 'Reasoning: 0/10' .github/workflows/grade.yml
+          grep -Fq 'Teacher File Review Panel' .github/workflows/teacher-review-files.yml
+          grep -Fq '60 automatic' TEACHER-GRADING.md
+          grep -Fq 'fixed grading template' TEACHER-GRADING.md
 
       - name: Validate workflow YAML syntax
         shell: bash
@@ -74,7 +74,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q 'createdFromScratch' .github/scripts/cp1-utils.js
-          grep -q 'template_repository' .github/scripts/cp1-utils.js
-          grep -q 'hasModificationEvidence' .github/scripts/cp1-utils.js
-          echo 'CP1 create-from-scratch + local modification contract is present.'
+          grep -Fq 'createdFromScratch' .github/scripts/cp1-utils.js
+          grep -Fq 'template_repository' .github/scripts/cp1-utils.js
+          grep -Fq 'hasModificationEvidence' .github/scripts/cp1-utils.js
+          grep -Fq 'commitCount' .github/scripts/cp1-utils.js
+          grep -Fq 'commits?per_page=3' .github/workflows/grade.yml
+          echo 'CP1 create-from-scratch + real local modification contract is present.'

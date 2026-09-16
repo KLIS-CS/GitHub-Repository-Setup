@@ -1,8 +1,8 @@
 # Teacher Grading — Checkpoint 1
 
-Checkpoint 1 is an **issue-based assessment**, not a branch/PR exercise. Students create a public CP1 repository from the official `KLIS-CS/GitHub-Repository-Setup` template, replace the starter README, create their own `.gitignore`, add a real LICENSE, and submit the repository URL through the central CP1 Issue Form.
+Checkpoint 1 is an **issue-based assessment**, not a branch/PR exercise. Students create a new public repository themselves with **GitHub → New repository**, configure README / `.gitignore` / LICENSE, clone the repository locally, make a meaningful modification, commit it, push it back to GitHub, and then submit the repository URL through the central CP1 Issue Form.
 
-Legacy from-scratch CP1 submissions remain accepted by the grader.
+Students should **not** use the KLIS-CS CP1 repository as a template and should not fork another repository. CP1 deliberately tests both **repository creation** and **later modification**.
 
 Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
@@ -10,12 +10,22 @@ Final score: **60 automatic + 40 teacher-reviewed = 100**.
 
 | Check | Points |
 |---|---:|
-| Repository is public, student-owned, correctly named, not a fork/unrelated template | 15 |
-| Starter README has been replaced with a meaningful project README | 15 |
+| Repository is public, student-owned, correctly named, created from scratch, and has later modification evidence | 15 |
+| `README.md` is meaningful and includes usable project/setup information | 15 |
 | `.gitignore` contains at least one real ignore rule | 10 |
 | LICENSE contains substantial license text | 10 |
 | All written submission responses are complete | 10 |
 | **Automatic subtotal** | **60** |
+
+For the **creation + modification** row, the grader checks repository metadata and commit history. A repository created with a template or fork cannot receive full credit, and a repository with only its initial creation commit cannot receive full credit. The expected pattern is:
+
+```text
+Create repository on GitHub
+→ clone locally
+→ modify
+→ commit
+→ push
+```
 
 ## Teacher file review panel
 
@@ -34,7 +44,7 @@ This lets the teacher review the actual submitted files without searching throug
 | README quality | Clear title, purpose, organization, and a useful setup/usage instruction | 10 |
 | `.gitignore` judgment | Rules are appropriate for the project and the explanation shows understanding of what should not be tracked | 10 |
 | LICENSE understanding | A real license is present and the student accurately explains what it communicates to other developers | 10 |
-| Reflection and repository judgment | Responses are specific, accurate, and connected to the repository the student configured | 10 |
+| Reflection and repository judgment | Student clearly distinguishes creating the repository from modifying it after cloning and explains the choices made | 10 |
 | **Total** |  | **40** |
 
 ## Entering the Teacher Grade
