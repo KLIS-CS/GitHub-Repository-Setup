@@ -1,26 +1,60 @@
-name: CP1 Template Self-Test
+name: CP1 Assessment Self-Test
 
 on:
   push:
     branches: [main]
-    paths: ['README.md','submission.md','TEACHER-GRADING.md','.github/**']
+    paths:
+      - 'README.md'
+      - 'TEACHER-GRADING.md'
+      - '.github/**'
+      - 'tests/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'README.md'
+      - 'TEACHER-GRADING.md'
+      - '.github/**'
+      - 'tests/**'
 
 permissions:
   contents: read
 
 jobs:
-  structural-test:
+  assessment-self-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate CP1 template
+
+      - name: Validate CP1 assessment structure
         shell: bash
         run: |
           set -euo pipefail
-          for f in README.md submission.md TEACHER-GRADING.md .github/pull_request_template.md .github/workflows/0-start-exercise.yml .github/workflows/grade.yml .github/workflows/guardrails.yml; do
+          for f in \
+            README.md \
+            TEACHER-GRADING.md \
+            .github/ISSUE_TEMPLATE/cp1-submission.yml \
+            .github/ISSUE_TEMPLATE/config.yml \
+            .github/workflows/grade.yml \
+            .github/scripts/cp1-utils.js \
+            tests/cp1-utils.test.js; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
-          grep -q 'cp1-YOUR-GITHUB-USERNAME' README.md
-          grep -q 'GitHub Username:' submission.md
+
+          grep -q 'cp1-repository-setup-YOUR-GITHUB-USERNAME' README.md
+          grep -q 'Practice Repository URL' .github/ISSUE_TEMPLATE/cp1-submission.yml
+          grep -q 'issues:' .github/workflows/grade.yml
           grep -q '/manual-grade' .github/workflows/grade.yml
-          echo 'CP1 template structure is valid.'
+          grep -q '60 automatic' TEACHER-GRADING.md
+
+      - name: Run grader fixture tests
+        run: node tests/cp1-utils.test.js
+
+      - name: Confirm CP1 does not depend on CP2 workflow skills
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Eqi 'required branch|open a Pull Request|git push|git clone' README.md; then
+            echo 'CP1 README still depends on CP2 Git workflow skills.'
+            exit 1
+          fi
+          echo 'CP1 is isolated to repository-setup skills.'
