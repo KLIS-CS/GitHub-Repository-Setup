@@ -1,6 +1,7 @@
+<!-- CP1-STARTER-README -->
 # CP1 — GitHub Repository Setup
 
-CP1 checks whether you can create and configure a clean GitHub repository with the three required project files:
+CP1 checks whether you can complete a clean GitHub repository with the three required project files:
 
 ```text
 README.md
@@ -8,21 +9,20 @@ README.md
 LICENSE
 ```
 
-## Important — CP1 does not use branches or Pull Requests
+## Start CP1 — Copy Exercise
 
-For CP1, work directly on the repository's default `main` branch.
+Use the official CP1 template to create your own exercise repository:
 
-- No feature branch
-- No Pull Request
-- No branch naming requirement
+[![Copy Exercise](https://img.shields.io/badge/COPY%20CP1%20EXERCISE-%E2%86%92-1f883d?style=for-the-badge&logo=github)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&name=cp1-repository-setup-YOUR-GITHUB-USERNAME&description=Checkpoint+1:+GitHub+Repository+Setup&visibility=public)
 
-Branch and Pull Request workflow begins in CP2.
+On the **Create a new repository from template** page:
 
-## Start CP1
+1. choose your own GitHub account as the owner;
+2. change `YOUR-GITHUB-USERNAME` to your real GitHub username;
+3. keep the repository **Public**;
+4. create the repository.
 
-Create a new **Public** repository in your own GitHub account using **GitHub → New repository**.
-
-Name it exactly:
+Required repository name:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
@@ -34,24 +34,40 @@ Example:
 cp1-repository-setup-octocat
 ```
 
-Do not fork another repository and do not use **Use this template**.
+## Important — CP1 does not use branches or Pull Requests
 
-## Required files
+Work directly on the copied repository's default `main` branch.
 
-Your finished repository must contain all three files at the repository root.
+- No feature branch
+- No Pull Request
+- No branch naming requirement
+
+Branch and Pull Request workflow begins in CP2.
+
+## Required work
+
+The copied repository includes the quiz instructions and this starter README. Your assessed work is the finished state of these three files on `main`:
+
+```text
+README.md
+.gitignore
+LICENSE
+```
 
 ### `README.md`
 
-Your README must include:
+**Replace this starter README with your own README.** Your finished README must include:
 
 - an H1 project title;
 - a clear explanation of what the repository is for;
 - a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
 - at least one useful instruction another developer could follow.
 
+The grader detects the starter marker in this file, so leaving the template README unchanged will not receive full README credit.
+
 ### `.gitignore`
 
-Your `.gitignore` must contain at least one meaningful ignore rule appropriate for the project, such as:
+Create a `.gitignore` at the repository root with at least one meaningful ignore rule appropriate for the project, for example:
 
 ```text
 node_modules/
@@ -62,16 +78,18 @@ dist/
 
 ### `LICENSE`
 
-Your repository must contain the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
+Create a `LICENSE` file containing the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
 
 ## Student flow
 
 ```text
-GitHub → New repository
-→ create the correctly named Public repository
-→ complete README.md
-→ complete .gitignore
-→ complete LICENSE
+Open CP1
+→ Copy Exercise
+→ create cp1-repository-setup-USERNAME
+→ stay on main
+→ replace README.md
+→ create .gitignore
+→ create LICENSE
 → save / push the finished files to main
 → Submit CP1
 → Automatic grading /60
@@ -79,6 +97,8 @@ GitHub → New repository
 ```
 
 You may edit the files directly on GitHub or locally. CP1 does not grade branch workflow.
+
+For the full checklist, open [`CP1-TASK.md`](./CP1-TASK.md).
 
 ## Submit CP1
 
@@ -96,21 +116,19 @@ README.md
 LICENSE
 ```
 
-The teacher can therefore review the three files from the CP1 Submission Issue before entering `/manual-grade`.
+The teacher reviews those three files in the CP1 Submission Issue before entering `/manual-grade`.
 
 ## Scoring
 
 | Evidence | Points |
 |---|---:|
-| Public, correctly named, student-owned repository created by the student | 15 |
-| `README.md` | 15 |
+| Public, correctly named, student-owned CP1 repository on `main` | 15 |
+| Finished `README.md` | 15 |
 | `.gitignore` | 10 |
 | `LICENSE` | 10 |
 | Written explanations | 10 |
 | **Automatic subtotal** | **60** |
 | Teacher review | **40** |
 | **Final** | **100** |
-
-[Open the CP1 Task Sheet](./CP1-TASK.md)
 
 [Back to GitHub Foundations Hub](https://github.com/KLIS-CS/GitHub-Foundations)
