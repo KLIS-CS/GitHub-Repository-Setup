@@ -70,6 +70,10 @@ const local = evaluateRepository({
   readme,
   gitignore,
   license,
+  readmePresent: true,
+  gitignorePresent: true,
+  licensePresent: true,
+  licensePath: 'LICENSE',
   student
 });
 assert.strictEqual(local.automatic, 60, `Expected local automatic score 60, got ${local.automatic}`);
@@ -79,11 +83,42 @@ const central = evaluateSubmission({
   readme,
   gitignore,
   license,
+  readmePresent: true,
+  gitignorePresent: true,
+  licensePresent: true,
+  licensePath: 'LICENSE',
   issueBody,
   student
 });
 assert.strictEqual(central.automatic, 60, `Expected central automatic score 60, got ${central.automatic}`);
 assert.deepStrictEqual(central.checks, local.checks, 'Central and student automatic checks must match');
+
+const licenseMarkdown = evaluateRepository({
+  meta: officialTemplateMeta,
+  readme,
+  gitignore,
+  license,
+  readmePresent: true,
+  gitignorePresent: true,
+  licensePresent: true,
+  licensePath: 'LICENSE.md',
+  student
+});
+assert.strictEqual(licenseMarkdown.automatic, 60, 'LICENSE.md must be accepted as a valid license filename');
+assert.strictEqual(licenseMarkdown.detectedLicensePath, 'LICENSE.md');
+
+const emptyButPresent = evaluateRepository({
+  meta: officialTemplateMeta,
+  readme: '',
+  gitignore: '',
+  license: '',
+  readmePresent: true,
+  gitignorePresent: true,
+  licensePresent: true,
+  licensePath: 'LICENSE.md',
+  student
+});
+assert.strictEqual(emptyButPresent.automatic, 25, 'Existing empty files should receive existence credit, not be reported as missing');
 
 const legacy = evaluateRepository({ meta: baseMeta, readme, gitignore, license, student });
 assert.strictEqual(legacy.automatic, 60, 'Legacy non-template CP1 repositories remain compatible');
