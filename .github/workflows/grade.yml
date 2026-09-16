@@ -16,29 +16,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out trusted grader code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
       - name: Grade CP1 submission
         uses: actions/github-script@v7
         with:
           script: |
+            const { evaluateSubmission, parseRepoUrl } = require('./.github/scripts/cp1-utils');
             const { owner, repo } = context.repo;
             const issue = context.payload.issue;
             const issueNumber = issue.number;
             const student = issue.user.login;
             const marker = '<!-- klis-cp1-score -->';
             const allowedGraders = new Set(['hbycwyh2008']);
-
-            function extractSection(label) {
-              const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-              const re = new RegExp(`### ${escaped}\\s*\\n+([\\s\\S]*?)(?=\\n### |$)`, 'i');
-              const value = issue.body?.match(re)?.[1]?.trim() || '';
-              return value === '_No response_' ? '' : value;
-            }
-
-            function parseRepoUrl(url) {
-              const m = url.trim().match(/^https:\/\/github\.com\/([^/\s]+)\/([^/#?\s]+?)(?:\.git)?\/?$/i);
-              if (!m) return null;
-              return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
-            }
 
             async function publicJson(url) {
               const r = await fetch(url, {
@@ -64,15 +57,10 @@ jobs:
               return await r.text();
             }
 
-            const repositoryUrl = extractSection('Practice Repository URL');
-            const statedUsername = extractSection('GitHub Username').replace(/^@/, '').trim();
-            const readmeAnswer = extractSection('README Explanation');
-            const gitignoreAnswer = extractSection('.gitignore Explanation');
-            const licenseAnswer = extractSection('LICENSE Explanation');
-            const reflection = extractSection('Reflection');
-            const integrity = extractSection('Integrity Check');
-
+            const repoUrlMatch = issue.body?.match(/### Practice Repository URL\s*\n+([^\n]+)/i);
+            const repositoryUrl = repoUrlMatch?.[1]?.trim() || '';
             const parsed = parseRepoUrl(repositoryUrl);
+
             let meta = null;
             let readme = '';
             let gitignore = '';
@@ -91,71 +79,14 @@ jobs:
               }
             }
 
-            const expectedRepo = `cp1-repository-setup-${student}`;
-            const repoAccessible = Boolean(meta && meta.private === false);
-            const ownerMatches = Boolean(meta && meta.owner?.login?.toLowerCase() === student.toLowerCase() && statedUsername.toLowerCase() === student.toLowerCase());
-            const createdFromScratch = Boolean(meta && meta.fork === false && !meta.template_repository);
-            const nameMatches = Boolean(meta && meta.name.toLowerCase() === expectedRepo.toLowerCase());
-
-            const readmeExists = Boolean(readme.trim());
-            const readmeStructured = readme.trim().length >= 120 && /^#\s+\S/m.test(readme);
-            const readmeHasSetup = /^#{1,3}\s+(setup|usage|getting started|installation|how to run)\b/im.test(readme);
-
-            const ignoreExists = Boolean(gitignore.trim());
-            const ignoreRules = gitignore.split(/\r?\n/).map(x => x.trim()).filter(x => x && !x.startsWith('#'));
-            const ignoreMeaningful = ignoreRules.length > 0;
-
-            const licenseExists = Boolean(license.trim());
-            const licenseSubstantial = license.trim().length >= 400 && /(copyright|permission|license|licensed)/i.test(license);
-
-            const answerChecks = [
-              ['README explanation', readmeAnswer, 2],
-              ['.gitignore explanation', gitignoreAnswer, 2],
-              ['LICENSE explanation', licenseAnswer, 3],
-              ['Reflection', reflection, 3]
-            ];
-            const answerScore = answerChecks.reduce((sum, [,text,pts]) => sum + (text.trim().length >= 40 ? pts : 0), 0);
-            const integrityConfirmed = /\[x\]/i.test(integrity);
-
-            const repoSetupScore =
-              (repoAccessible ? 5 : 0) +
-              (ownerMatches ? 5 : 0) +
-              (nameMatches && createdFromScratch ? 5 : 0);
-
-            const readmeScore =
-              (readmeExists ? 5 : 0) +
-              (readmeStructured ? 5 : 0) +
-              (readmeHasSetup ? 5 : 0);
-
-            const ignoreScore = (ignoreExists ? 5 : 0) + (ignoreMeaningful ? 5 : 0);
-            const licenseScore = (licenseExists ? 5 : 0) + (licenseSubstantial ? 5 : 0);
-
-            const checks = [
-              ['Repository setup', repoSetupScore, 15,
-                !parsed ? 'Enter a full github.com repository URL.' :
-                !repoAccessible ? 'Repository not found or not public.' :
-                !ownerMatches ? `Repository and submitted username must belong to @${student}.` :
-                !nameMatches ? `Repository must be named ${expectedRepo}.` :
-                !createdFromScratch ? 'Repository must not be a fork or template-generated copy.' :
-                'Public, correctly named, student-owned repository created from scratch.'],
-              ['README.md', readmeScore, 15,
-                !readmeExists ? 'README.md was not found at repository root.' :
-                !readmeStructured ? 'Add an H1 title and at least 120 characters of useful content.' :
-                !readmeHasSetup ? 'Add a Setup, Usage, Getting Started, Installation, or How to Run section.' :
-                'README structure passed automatic checks.'],
-              ['.gitignore', ignoreScore, 10,
-                !ignoreExists ? '.gitignore was not found at repository root.' :
-                !ignoreMeaningful ? 'Add at least one non-comment ignore rule.' :
-                `${ignoreRules.length} ignore rule(s) detected.`],
-              ['LICENSE', licenseScore, 10,
-                !licenseExists ? 'LICENSE was not found at repository root.' :
-                !licenseSubstantial ? 'LICENSE appears incomplete; use full license text.' :
-                'Substantial license text detected.'],
-              ['Written explanations', answerScore, 10,
-                answerScore === 10 ? 'All four responses contain substantive answers.' : 'Each explanation should contain at least about two complete sentences.']
-            ];
-
-            const automatic = checks.reduce((sum, [,score]) => sum + score, 0);
+            const result = evaluateSubmission({
+              meta,
+              readme,
+              gitignore,
+              license,
+              issueBody: issue.body || '',
+              student
+            });
 
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner, repo, issue_number: issueNumber, per_page: 100
@@ -172,18 +103,18 @@ jobs:
             }
 
             const teacher = manual?.score ?? 0;
-            const total = automatic + teacher;
-            const rows = checks.map(([label, earned, max, detail]) =>
+            const total = result.automatic + teacher;
+            const rows = result.checks.map(([label, earned, max, detail]) =>
               `| ${earned === max ? '✅' : earned ? '🟨' : '⬜'} ${label} | ${earned}/${max} | ${detail} |`
             ).join('\n');
 
-            const status = automatic < 60
+            const status = result.automatic < 60
               ? '🟡 **IN PROGRESS — fix the repository or submission, then edit this Issue to re-grade.**'
               : !manual
                 ? '🔵 **AUTOMATIC CHECKS PASSED — awaiting teacher review.**'
                 : `✅ **FINAL SCORE: ${total}/100**`;
 
-            const integrityNote = integrityConfirmed
+            const integrityNote = result.integrityConfirmed
               ? 'Integrity check confirmed in the submission form.'
               : 'Integrity checkbox evidence was not detected; teacher should verify authorship.';
 
@@ -191,8 +122,8 @@ jobs:
             ## CP1 Automatic Check
 
             **Student:** @${student}  
-            **Practice repository:** ${repositoryUrl || 'not provided'}  
-            **Automatic score:** ${automatic}/60  
+            **Practice repository:** ${result.repositoryUrl || 'not provided'}  
+            **Automatic score:** ${result.automatic}/60  
             **Teacher score:** ${manual ? `${teacher}/40 by @${manual.grader}` : 'awaiting review'}  
             **Current total:** ${total}/100
 
@@ -217,6 +148,6 @@ jobs:
 
             await core.summary
               .addHeading(`CP1: ${total}/100`)
-              .addRaw(`Automatic: ${automatic}/60\n`)
+              .addRaw(`Automatic: ${result.automatic}/60\n`)
               .addRaw(`Teacher: ${manual ? `${teacher}/40` : 'awaiting review'}\n`)
               .write();
