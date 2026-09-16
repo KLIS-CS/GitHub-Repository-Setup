@@ -1,16 +1,15 @@
 # CP1 — GitHub Repository Setup
 
-<!-- CP1-STARTER-README -->
+Checkpoint 1 tests two separate skills:
 
-This repository is the **official CP1 exercise template**. CP1 tests whether you can configure a usable GitHub repository by producing your own `README.md`, `.gitignore`, and `LICENSE`.
+1. **Create** a GitHub repository yourself from the GitHub **New repository** screen.
+2. **Modify** that repository locally so it becomes a usable project repository.
 
-## Start CP1
+Do **not** use a template repository and do **not** fork another repository for CP1.
 
-Create your own copy from this template:
+## Required repository
 
-[![Copy Exercise](https://img.shields.io/badge/COPY%20CP1%20EXERCISE-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=KLIS-CS&template_name=GitHub-Repository-Setup&owner=%40me&visibility=public)
-
-Name your copy exactly:
+Create a new **Public** repository in your own GitHub account named exactly:
 
 ```text
 cp1-repository-setup-YOUR-GITHUB-USERNAME
@@ -22,55 +21,69 @@ Example:
 cp1-repository-setup-octocat
 ```
 
-Make the copied repository **Public**.
+When creating it on GitHub, initialize it with a `README.md` so the repository has a `main` branch that you can clone.
 
 ## Student flow
 
 ```text
-Copy Exercise
-→ Actions
-→ Start CP1
-→ Run workflow
-→ Clone your copied repository
-→ Read CP1-TASK.md
-→ Replace README.md
-→ Create .gitignore
-→ Add LICENSE
-→ Commit + push to main
-→ Submit CP1
-→ Automatic grading
-→ Teacher grading
+GitHub → New repository
+→ create the repository yourself
+→ initialize with README.md
+→ clone it to your computer
+→ modify README.md
+→ create .gitignore
+→ add LICENSE
+→ git status
+→ git add
+→ git commit
+→ git push
+→ submit CP1
+→ automatic grading
+→ teacher grading
 ```
 
-After copying the repository, open **Actions → Start CP1 → Run workflow**. GitHub will create an Exercise Issue in your copy with the task summary and the Submit link.
+This is intentional: CP1 should prove that you can both **build** a repository and **change** it after creation.
 
-## Important: replace this README
+## What you must modify or add
 
-This file is only the **starter README**. Before submitting CP1, replace the entire contents of `README.md` with your own project README.
+### README.md
 
-Your finished README must include:
+Replace the initial README content with a useful project README containing:
 
 - an H1 project title;
 - a clear explanation of what the repository is for;
 - a **Setup**, **Usage**, **Getting Started**, **Installation**, or **How to Run** section;
 - at least one useful instruction another developer could follow.
 
-The automatic grader detects the `CP1-STARTER-README` marker above. If that marker is still present, the README portion cannot receive full credit.
+### .gitignore
 
-## Other required files
-
-You must create these yourself:
+Create a real `.gitignore` appropriate for your project. It must contain at least one non-comment ignore rule such as:
 
 ```text
-.gitignore
-LICENSE
+node_modules/
+.env
+.DS_Store
+dist/
 ```
 
-Your `.gitignore` needs at least one real ignore rule appropriate for the project. Your `LICENSE` must contain the complete text of a real open-source license.
+### LICENSE
 
-Full instructions remain available after cloning in:
+Add the complete text of a real open-source license such as MIT, Apache-2.0, or GPL-3.0.
 
-[**CP1-TASK.md**](./CP1-TASK.md)
+## Required modification evidence
+
+Your repository must show that it was created first and then modified afterward. The automatic grader therefore expects **at least two commits** on the repository:
+
+```text
+Commit 1 — repository created / initial README
+Commit 2+ — your local repository setup changes
+```
+
+Use `git status` while working, then commit and push your completed changes to `main`.
+
+CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
+
+Full instructions: [CP1-TASK.md](./CP1-TASK.md)
 
 ## Submit CP1
 
@@ -80,15 +93,16 @@ When the repository is complete, use the central submission form:
 
 The central submission Issue is where:
 
-- the automatic grader posts the **60-point** automatic score;
+- the automatic grader inspects your public repository;
 - the teacher sees direct links and previews for your `README.md`, `.gitignore`, and `LICENSE`;
-- the teacher enters the **40-point** manual score using `/manual-grade`.
+- the teacher enters the 40-point manual score.
 
 ## Scoring
 
 | Evidence | Points |
 |---|---:|
-| Public, correctly named, student-owned CP1 repository | 15 |
+| Correct public student-owned repository created from scratch | 10 |
+| Evidence that the repository was modified after creation | 5 |
 | Finished `README.md` | 15 |
 | `.gitignore` | 10 |
 | `LICENSE` | 10 |
@@ -96,7 +110,5 @@ The central submission Issue is where:
 | **Automatic subtotal** | **60** |
 | Teacher review | **40** |
 | **Final** | **100** |
-
-CP1 does **not** assess feature branches or Pull Requests. Those begin in CP2.
 
 [Back to GitHub Foundations Hub](https://github.com/KLIS-CS/GitHub-Foundations)
