@@ -12,9 +12,21 @@ function extractSection(body, label) {
 }
 
 function parseRepoUrl(url) {
-  const m = (url || '').trim().match(/^https:\/\/github\.com\/([^/\s]+)\/([^/#?\s]+?)(?:\.git)?\/?$/i);
-  if (!m) return null;
-  return { owner: m[1], repo: m[2].replace(/\.git$/i, '') };
+  try {
+    const parsed = new URL((url || '').trim());
+    if (parsed.protocol !== 'https:' || parsed.hostname.toLowerCase() !== 'github.com') return null;
+
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    if (parts.length < 2) return null;
+
+    const owner = parts[0];
+    const repo = parts[1].replace(/\.git$/i, '');
+    if (!owner || !repo) return null;
+
+    return { owner, repo };
+  } catch {
+    return null;
+  }
 }
 
 function evaluateRepository({
