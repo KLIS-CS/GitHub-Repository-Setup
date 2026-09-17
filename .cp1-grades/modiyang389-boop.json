@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "student": "modiyang389-boop",
+  "repository": "https://github.com/modiyang389-boop/cp1--repository-setup-YOUR-GITHUB-Modiyang389-boop",
+  "automaticAtMother": 48,
+  "teacherScore": 35,
+  "finalAtMother": 83,
+  "grader": "hbycwyh2008",
+  "breakdown": {
+    "readme": 8,
+    "gitignore": 8,
+    "license": 10,
+    "reasoning": 9
+  },
+  "feedback": "README file should not be added into your gitignore file, readme file need a section that explains what your currect repo is for.",
+  "submissionIssue": "https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/35",
+  "updatedAt": "2026-09-17T07:18:10.246Z"
+}
