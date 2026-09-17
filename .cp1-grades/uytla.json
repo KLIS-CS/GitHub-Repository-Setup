@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "student": "uytla",
+  "repository": "https://github.com/Uytla/cp1-repository-setup-Uytla",
+  "automaticAtMother": 60,
+  "teacherScore": 40,
+  "finalAtMother": 100,
+  "grader": "hbycwyh2008",
+  "breakdown": null,
+  "feedback": "",
+  "submissionIssue": "https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/36",
+  "updatedAt": "2026-09-17T07:25:10.583Z"
+}
