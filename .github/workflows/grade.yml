@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   grade:
-    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' && !github.event.issue.pull_request && contains(github.event.issue.body, '### Practice Repository URL') }}
+    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' && !github.event.issue.pull_request && (startsWith(github.event.issue.title, '[CP1] Repository Setup Submission') || contains(github.event.issue.body, '### Practice Repository URL')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -96,8 +96,59 @@ jobs:
               };
             }
 
+            async function discoverRepositoryUrl() {
+              const expectedRepo = `cp1-repository-setup-${student}`;
+              try {
+                const exact = await github.rest.repos.get({ owner: student, repo: expectedRepo });
+                if (exact.data && exact.data.private === false) return exact.data.html_url;
+              } catch (error) {
+                if (error.status !== 404) core.warning(`Exact CP1 repository lookup failed: ${error.message}`);
+              }
+
+              const repos = await github.paginate(github.rest.repos.listForUser, {
+                username: student, per_page: 100, sort: 'updated', direction: 'desc'
+              });
+              for (const candidate of repos.slice(0, 40)) {
+                if (candidate.private) continue;
+                try {
+                  const details = await github.rest.repos.get({ owner: student, repo: candidate.name });
+                  if (details.data.template_repository?.full_name === 'KLIS-CS/GitHub-Repository-Setup') {
+                    return details.data.html_url;
+                  }
+                  const workflow = await github.rest.repos.getContent({
+                    owner: student,
+                    repo: candidate.name,
+                    path: '.github/workflows/student-score.yml',
+                    ref: candidate.default_branch || 'main'
+                  });
+                  if (!Array.isArray(workflow.data) && workflow.data.content) {
+                    const text = Buffer.from(workflow.data.content, workflow.data.encoding).toString('utf8');
+                    if (text.includes('klis-cp1-local-score')) return candidate.html_url;
+                  }
+                } catch (error) {
+                  if (error.status !== 404) core.warning(`Skipping ${candidate.name}: ${error.message}`);
+                }
+              }
+              return '';
+            }
+
             const repoUrlMatch = issue.body?.match(/### Practice Repository URL\s*\n+([^\n]+)/i);
-            const repositoryUrl = repoUrlMatch?.[1]?.trim() || '';
+            let repositoryUrl = repoUrlMatch?.[1]?.trim() || '';
+            if (!repositoryUrl) repositoryUrl = await discoverRepositoryUrl();
+
+            if (repositoryUrl && !repoUrlMatch) {
+              const autoDetected = `${issue.body || ''}
+
+### Practice Repository URL
+${repositoryUrl}
+
+### GitHub Username
+${student}`;
+              await github.rest.issues.update({
+                owner, repo, issue_number: issueNumber, body: autoDetected
+              });
+            }
+
             const parsed = parseRepoUrl(repositoryUrl);
 
             let meta = null;
