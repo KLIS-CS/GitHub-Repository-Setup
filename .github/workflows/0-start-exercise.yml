@@ -1,0 +1,51 @@
+name: Start Exercise
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  start:
+    if: ${{ github.repository != 'KLIS-CS/GitHub-Repository-Setup' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create CP1 Exercise Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const marker = '<!-- klis-cp1-exercise -->';
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'all', per_page: 100
+            });
+            if (issues.some(i => !i.pull_request && i.body?.includes(marker))) return;
+
+            const body = `${marker}
+            ## Checkpoint 1 — Repository Setup
+
+            Welcome @${owner}.
+
+            ### Your task
+
+            Work directly on \`main\` and create these three project files at the repository root:
+
+            - \`README.md\`
+            - \`.gitignore\`
+            - \`LICENSE\` (or \`LICENSE.md\` / \`LICENSE.txt\`)
+
+            CP1 does **not** use a feature branch or Pull Request.
+
+            ### Automatic grading
+
+            The grader updates the score table **below in this same Exercise Issue** whenever the required files change.
+            `;
+
+            await github.rest.issues.create({
+              owner, repo,
+              title: 'Exercise: Checkpoint 1 — Repository Setup',
+              body
+            });
