@@ -285,7 +285,7 @@ jobs:
 
             **Current teacher breakdown:** ${breakdownText}
 
-            Grade here in the mother repository. The published teacher score is then pulled into the student's own **CP1 — Score** Issue.
+            Grade here in the mother repository. The published teacher score is then synchronized into the student's original **Exercise Issue**.
 
             ${teacherTemplate}
 
