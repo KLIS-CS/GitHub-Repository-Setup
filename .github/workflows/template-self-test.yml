@@ -66,6 +66,9 @@ jobs:
           require_text .github/workflows/student-score.yml 'schedule:'
           require_text .github/workflows/0-start-exercise.yml 'branches: [main]'
           require_text .github/workflows/0-start-exercise.yml "github.repository != 'KLIS-CS/GitHub-Repository-Setup'"
+          require_text .github/workflows/0-start-exercise.yml 'at least one meaningful ignore rule'
+          require_text .github/workflows/0-start-exercise.yml 'complete open-source'
+          require_text .github/ISSUE_TEMPLATE/cp1-submission.yml 'original **Exercise Issue**'
 
           require_text .github/workflows/teacher-review-files.yml "github.repository == 'KLIS-CS/GitHub-Repository-Setup'"
           require_text .github/workflows/teacher-review-files.yml 'Teacher Review Files'
