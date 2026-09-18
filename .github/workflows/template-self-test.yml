@@ -39,6 +39,7 @@ jobs:
           require_file .github/admin/TEACHER-GRADING.md
           require_file .github/ISSUE_TEMPLATE/cp1-submission.yml
           require_file .github/ISSUE_TEMPLATE/config.yml
+          require_file .github/workflows/0-start-exercise.yml
           require_file .github/workflows/grade.yml
           require_file .github/workflows/student-score.yml
           require_file .github/workflows/teacher-review-files.yml
@@ -47,7 +48,7 @@ jobs:
 
           require_text .github/README.md 'Copy Exercise'
           require_text .github/README.md 'template_owner=KLIS-CS&template_name=GitHub-Repository-Setup'
-          require_text .github/README.md 'CP1 — Score'
+          require_text .github/README.md 'Exercise Issue'
           require_text .github/README.md 'README.md'
           require_text .github/README.md '.gitignore'
           require_text .github/README.md 'LICENSE'
@@ -58,10 +59,13 @@ jobs:
           require_text .github/workflows/grade.yml '/manual-grade'
 
           require_text .github/workflows/student-score.yml "github.repository != 'KLIS-CS/GitHub-Repository-Setup'"
-          require_text .github/workflows/student-score.yml 'CP1 — Score'
+          require_text .github/workflows/student-score.yml 'klis-cp1-exercise'
+          require_text .github/workflows/student-score.yml 'klis-cp1-local-score'
+          require_text .github/workflows/student-score.yml 'updateComment'
           require_text .github/workflows/student-score.yml 'raw.githubusercontent.com/KLIS-CS/GitHub-Repository-Setup/grades'
-          require_text .github/workflows/student-score.yml 'workflow_dispatch'
           require_text .github/workflows/student-score.yml 'schedule:'
+          require_text .github/workflows/0-start-exercise.yml 'branches: [main]'
+          require_text .github/workflows/0-start-exercise.yml "github.repository != 'KLIS-CS/GitHub-Repository-Setup'"
 
           require_text .github/workflows/teacher-review-files.yml "github.repository == 'KLIS-CS/GitHub-Repository-Setup'"
           require_text .github/workflows/teacher-review-files.yml 'Teacher Review Files'
