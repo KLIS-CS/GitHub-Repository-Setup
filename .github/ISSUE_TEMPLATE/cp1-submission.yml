@@ -21,23 +21,11 @@ body:
 
         Your finished repository must contain `README.md`, `.gitignore`, and `LICENSE` at the repository root. The teacher will see direct links and previews of all three files in this submission Issue.
 
-  - type: input
-    id: repository_url
+  - type: markdown
     attributes:
-      label: Practice Repository URL
-      description: Paste the full GitHub URL of your public CP1 repository. Paste the repository URL, not a README or file URL.
-      placeholder: https://github.com/YOUR-USERNAME/cp1-repository-setup-YOUR-USERNAME
-    validations:
-      required: true
-
-  - type: input
-    id: github_username
-    attributes:
-      label: GitHub Username
-      description: Enter the GitHub username that owns the CP1 repository.
-      placeholder: octocat
-    validations:
-      required: true
+      value: |
+        **Repository URL and GitHub username are detected automatically from the account that opens this submission.**
+        Do not paste them manually. The detected repository URL will be written into this Issue after submission.
 
   - type: textarea
     id: readme_reason
