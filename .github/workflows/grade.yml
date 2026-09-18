@@ -145,13 +145,15 @@ jobs:
             if (!repositoryUrl) repositoryUrl = await discoverRepositoryUrl();
 
             if (repositoryUrl && !repoUrlMatch) {
-              const autoDetected = `${issue.body || ''}
-
-### Practice Repository URL
-${repositoryUrl}
-
-### GitHub Username
-${student}`;
+              const autoDetected = [
+                issue.body || '',
+                '',
+                '### Practice Repository URL',
+                repositoryUrl,
+                '',
+                '### GitHub Username',
+                student
+              ].join('\\n');
               await github.rest.issues.update({
                 owner, repo, issue_number: issueNumber, body: autoDetected
               });
