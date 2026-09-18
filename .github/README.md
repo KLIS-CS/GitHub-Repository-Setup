@@ -50,10 +50,10 @@ Copy Exercise
 → create .gitignore
 → create a license file
 → save / push the finished files
-→ automatic score appears in your own CP1 — Score Issue
+→ automatic score appears in the original Exercise Issue
 → Submit CP1 to the mother repository
 → teacher grades in the mother repository
-→ teacher score syncs back to your own CP1 — Score Issue
+→ teacher score syncs back to the same Exercise Issue
 ```
 
 ## Repository name
@@ -74,11 +74,7 @@ Keep the repository **Public** and keep `main` as the default branch.
 
 ## Your score
 
-After you create or update one of the required files, GitHub Actions creates or refreshes an Issue named:
-
-```text
-CP1 — Score
-```
+After the copied repository is created, GitHub automatically creates one **Exercise Issue**. The automatic score and teacher feedback are updated in that same Issue.
 
 That Issue shows:
 
@@ -87,9 +83,7 @@ That Issue shows:
 - Final score `/100`
 - Teacher feedback
 
-Teacher grades are entered in the KLIS-CS mother repository and then synchronized back to your own Score Issue. The sync runs automatically about once per hour. You can also refresh immediately with:
-
-**Actions → CP1 — Student Score → Run workflow**
+Teacher grades are entered in the KLIS-CS mother repository and synchronized back to the same Exercise Issue. The sync runs automatically; students do **not** need to open Actions or refresh anything manually.
 
 ## Submit CP1
 
