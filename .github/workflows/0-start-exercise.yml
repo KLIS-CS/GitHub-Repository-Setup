@@ -31,13 +31,12 @@ jobs:
 
             ### Your task
 
-            Work directly on \`main\` and create these three project files at the repository root:
+            Work directly on `main` and complete this checklist:
 
-            - \`README.md\`
-            - \`.gitignore\`
-            - \`LICENSE\` (or \`LICENSE.md\` / \`LICENSE.txt\`)
-
-            CP1 does **not** use a feature branch or Pull Request.
+            - [ ] Create `README.md` at the repository root with a project title, purpose, and useful setup/usage instructions.
+            - [ ] Create `.gitignore` with at least one meaningful ignore rule appropriate for the project.
+            - [ ] Add a complete open-source `LICENSE` (or `LICENSE.md` / `LICENSE.txt`).
+            - [ ] Keep all CP1 work on `main`; CP1 does **not** use a feature branch or Pull Request.
 
             ### Automatic grading
 
