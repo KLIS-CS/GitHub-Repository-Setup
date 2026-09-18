@@ -12,7 +12,15 @@ permissions:
 
 jobs:
   grade:
-    if: ${{ github.repository == 'KLIS-CS/GitHub-Repository-Setup' && !github.event.issue.pull_request && (startsWith(github.event.issue.title, '[CP1] Repository Setup Submission') || contains(github.event.issue.body, '### Practice Repository URL')) }}
+    if: >-
+      ${{
+        github.repository == 'KLIS-CS/GitHub-Repository-Setup' &&
+        !github.event.issue.pull_request &&
+        (
+          startsWith(github.event.issue.title, '[CP1] Repository Setup Submission') ||
+          contains(github.event.issue.body, '### Practice Repository URL')
+        )
+      }}
     runs-on: ubuntu-latest
 
     steps:
