@@ -91,7 +91,7 @@ When the three files are ready, submit your repository to the mother repository:
 
 [![Submit CP1](https://img.shields.io/badge/SUBMIT%20CP1-%E2%86%92-0969da?style=for-the-badge&logo=github)](https://github.com/KLIS-CS/GitHub-Repository-Setup/issues/new?template=cp1-submission.yml)
 
-Paste the repository URL, not a file URL.
+Your repository URL and GitHub username are detected automatically from the account that opens the submission. Do **not** paste a repository URL manually.
 
 ## Before you submit
 
